@@ -1,0 +1,5 @@
+{
+  "role-name" : "gradle-xqdoc-internal",
+  "description" : "Internal role used for amping",
+  "role" : [ "gradle-xqdoc-writer" ]
+}

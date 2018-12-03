@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Example Gradle Project with xqDoc and OpenAPI",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://example.com/{version}/resources",
+      "variables": {
+        "version": {
+          "default": "v1"
+        }
+      }
+    }
+  ],
+  "paths": {
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+    },
+    "parameters": {
+    },
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {
+      "basicAuth": {
+        "description": "Each request must contain the headers necessary for basic authentication",
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  }
+}

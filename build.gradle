@@ -1,0 +1,63 @@
+import org.apache.tools.ant.filters.BaseFilterReader
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.xqdoc:xqdoc:1.9.4"
+    }
+}
+
+plugins {
+  id "net.saliman.properties" version "1.4.6"
+  id "com.marklogic.ml-gradle" version "3.10.0"
+}
+
+repositories {
+  jcenter()
+  maven { url "http://developer.marklogic.com/maven2/" }
+  maven { url "http://repository.cloudera.com/artifactory/cloudera-repos/" }
+}
+
+configurations {
+  mlcp {
+    resolutionStrategy {
+      force "xml-apis:xml-apis:1.4.01"
+    }
+  }
+}
+
+dependencies {
+    mlcp "com.marklogic:mlcp:9.0.6"
+    mlcp files("marklogic/lib")
+}
+
+class XQDocFilter extends BaseFilterReader {
+    XQDocFilter(Reader input) {
+        super(new StringReader(new org.xqdoc.MarkLogicProcessor().process(input.text)))
+    }
+}
+
+task generateXQDocs(type: Copy) {
+  into 'xqDoc'
+  from 'src/main/ml-modules'
+  include '**/*.xqy'
+  rename { it - '.xqy' + '.xml' } 
+  includeEmptyDirs = false
+  filter XQDocFilter
+}
+
+/**
+ * Seed original Glossary Manager sample data
+ */
+ task importXQDoc(type: com.marklogic.gradle.task.MlcpTask) {
+  classpath = configurations.mlcp
+  command = "IMPORT"
+  database = "gradle-xqdoc-content"
+  input_file_path = "xqDoc"
+  output_collections = "xqdoc"
+  output_uri_replace = ".*xqDoc,'/xqDoc'"
+  document_type = "mixed"
+}

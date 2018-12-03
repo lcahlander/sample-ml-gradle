@@ -1,0 +1,5 @@
+{
+  "role-name" : "gradle-xqdoc-reader",
+  "description" : "Can view documents, but not edit",
+  "role" : [ "rest-reader", "gradle-xqdoc-nobody" ]
+}
