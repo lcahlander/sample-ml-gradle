@@ -1,3 +1,6 @@
 /backup-build.gradle
 /build
 .DS_Store
+/xqDoc/services
+/xqDoc/root
+/.gradle

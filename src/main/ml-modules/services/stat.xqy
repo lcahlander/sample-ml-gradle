@@ -39,7 +39,7 @@ declare function get(
   ) as document-node()*
 {
   let $_ := xdmp:log("GET called")
-  return <status>online</status>
+  return document { <status>online</status> }
 };
 
 (:~

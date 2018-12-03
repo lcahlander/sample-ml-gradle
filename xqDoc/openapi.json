@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://example.com/{version}/resources",
+      "url": "http://localhost:8012/{version}/resources",
       "variables": {
         "version": {
           "default": "v1"
