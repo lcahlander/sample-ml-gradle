@@ -27,7 +27,7 @@
     "headers": {},
     "securitySchemes": {
       "basicAuth": {
-        "description": "Each request must contain the headers necessary for basic authentication",
+        "description": "Each request must contain the headers necessary for basic authentication.  Use gradle-xqdoc-reader/gradle-xqdoc-reader",
         "type": "http",
         "scheme": "basic"
       }
