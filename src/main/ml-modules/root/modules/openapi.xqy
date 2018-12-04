@@ -1,5 +1,14 @@
 xquery version "1.0-ml";
 
+(:~
+ This module generates the OpenAPI JSON document for the OpenAPI display.
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @return the OpenAPI JSON document for the OpenAPI display
+ @see https://github.com/OAI/OpenAPI-Specification
+ @see https://github.com/lcahlander/xqdoc
+ :)
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
 let $services := fn:collection("xqdoc")/xqdoc:xqdoc[xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:custom/@tag = 'openapi']
@@ -25,9 +34,6 @@ let $endpoints :=
 order by $name
 return """/" || $name || """: {" || fn:string-join($endpoints, ",") || "}"
 let $myobj := xdmp:from-json-string("{" || fn:string-join($service-output, ",") || "}")
-(:
-let $update := xdmp:node-replace($base/paths, )
-:)
 return object-node { 
     "openapi" : "3.0.0", 
     "info" : $base/info, 

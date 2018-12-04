@@ -4,7 +4,7 @@ xquery version "1.0-ml";
   Status API calls
   @author John Q. Public
  :)
-module namespace resource = "http://marklogic.com/rest-api/resource/stat";
+module namespace stat = "http://marklogic.com/rest-api/resource/stat";
 
 (:~
   Gets the status of the system
@@ -33,7 +33,7 @@ module namespace resource = "http://marklogic.com/rest-api/resource/stat";
           }
         ]
  :)
-declare function get(
+declare function stat:get(
   $context as map:map,
   $params  as map:map
   ) as document-node()*
@@ -45,7 +45,7 @@ declare function get(
 (:~
  @custom:openapi-ignore Yes
  :)
-declare function put(
+declare function stat:put(
   $context as map:map,
   $params  as map:map,
   $input   as document-node()*
@@ -57,7 +57,7 @@ declare function put(
 (:~
  @custom:openapi-ignore Yes
  :)
-declare function post(
+declare function stat:post(
   $context as map:map,
   $params  as map:map,
   $input   as document-node()*
@@ -69,7 +69,7 @@ declare function post(
 (:~
  @custom:openapi-ignore Yes
  :)
-declare function delete(
+declare function stat:delete(
   $context as map:map,
   $params  as map:map
   ) as document-node()?
