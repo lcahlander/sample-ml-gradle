@@ -237,7 +237,7 @@ declare function display:print-variables($uri as xs:string, $local as xs:boolean
                 <div>
                  <a name="{ fn:concat("$", xs:string($v/xq:uri)) }"/>
                  <ul class="method">
-                   <li class="left">{ fn:concat("$", xs:string($v/xq:uri)) }</li>
+                   <li class="left">{ fn:concat("$", xs:string($v/xq:name)) }</li>
                    <li class="right">{ $v/xq:comment/xq:description/node() }</li>
                  </ul>
                  <ul>
@@ -1041,7 +1041,7 @@ declare function display:print-external-variable-references($variable as element
  :)
 declare function display:print-internal-variable-references($variable as element(), $local as xs:boolean) as element()*
 {
-  if (fn:exists(fn:collection($display:XQDOC_COLLECTION)/xq:xqdoc/xq:functions/xq:function/xq:ref-variable[display:module-uri(.) = display:module-uri($variable) and xq:uri=display:module-uri($variable) and xq:name=xs:string($variable/xq:uri)])) then
+  if (fn:exists(fn:collection($display:XQDOC_COLLECTION)/xq:xqdoc/xq:functions/xq:function/xq:ref-variable[display:module-uri(.) = display:module-uri($variable) and xq:uri=display:module-uri($variable) and xq:name=xs:string($variable/xq:name)])) then
     <div class="methoddetail">
      <h6>Internal Functions that reference this Variable</h6>
      <table class="inexternal">
@@ -1050,7 +1050,7 @@ declare function display:print-internal-variable-references($variable as element
         <th align="left">Function Name</th>
        </tr>
        {
-        let $list := for $x in fn:collection($display:XQDOC_COLLECTION)/xq:xqdoc/xq:functions/xq:function/xq:ref-variable[xq:uri=display:module-uri($variable) and xq:name=xs:string($variable/xq:uri)]
+        let $list := for $x in fn:collection($display:XQDOC_COLLECTION)/xq:xqdoc/xq:functions/xq:function/xq:ref-variable[xq:uri=display:module-uri($variable) and xq:name=xs:string($variable/xq:name)]
                      return $x
         let $uris := fn:distinct-values(for $y in $list
                                      where display:module-uri($y) = display:module-uri($variable)
@@ -1520,8 +1520,9 @@ declare function display:print-preserve-newlines($strin as xs:string?) as item()
  :
  :  @return the stylesheet
  :)
-declare function display:get-stylesheet() as element()
-{
+declare function display:get-stylesheet() as element()*
+{(
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>,
 <style>
 <!--
 body		{
@@ -1672,7 +1673,7 @@ div.overview p {
      
  -->
 </style>
-};
+)};
 
 
 (: Stylus Studio meta-information - (c) 2004-2006. Progress Software Corporation. All rights reserved.
