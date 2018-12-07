@@ -1,0 +1,15 @@
+{
+  "name": "xqdoc",
+  "description": "xqDoc display application",
+  "dependencies": {
+    "@polymer/app-layout": "^3.0.2",
+    "@polymer/iron-icons": "^3.0.1",
+    "@polymer/paper-card": "^3.0.1",
+    "@polymer/paper-icon-button": "^3.0.1",
+    "@polymer/polymer": "^3.0.0"
+  },
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}
