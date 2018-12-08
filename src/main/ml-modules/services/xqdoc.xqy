@@ -34,7 +34,8 @@ declare function xq:comment($comment as node()?) {
       "errors": array-node { $comment/xqdoc:error/text() },
       "deprecated": array-node { $comment/xqdoc:deprecated/text() },
       "see": array-node { $comment/xqdoc:see/text() },
-      "since": array-node { $comment/xqdoc:since/text() }
+      "since": array-node { $comment/xqdoc:since/text() },
+      "openapi" : if ($comment/xqdoc:custom[@tag = "openapi"]) then xdmp:from-json-string("{" || fn:string-join($comment/xqdoc:custom[@tag = "openapi"]/text()) || "}") else fn:false()
     } 
   else fn:false()  
 };
@@ -134,10 +135,11 @@ declare function xq:variables($variables as node()*, $module-uri as xs:string?) 
 
 declare function xq:imports($imports as node()*) {
   for $import in $imports
+  let $uri := $import/xqdoc:uri/text()
   return
     object-node {
       "comment" : xq:comment($import/xqdoc:comment),
-      "uri" : $import/xqdoc:uri/text(),
+      "uri" : fn:substring(fn:substring($uri, 1, fn:string-length($uri) - 1), 2),
       "type" : xs:string($import/@type)
     }
 };
@@ -214,9 +216,11 @@ declare function xq:get(
                         "version" : $doc/xqdoc:control/xqdoc:version/text()
                       },
           "comment" : xq:comment($module-comment),
-          "variables" : array-node { xq:variables($doc/xqdoc:variables/xqdoc:variable, $doc/xqdoc:module/xqdoc:uri/text()) },
-          "imports" : array-node { xq:imports($doc/xqdoc:imports/xqdoc:import) },
-          "functions" : array-node { xq:functions($doc/xqdoc:functions/xqdoc:function, $doc/xqdoc:module/xqdoc:uri/text()) }
+          "uri": $moduleURI,
+          "name" : if ($doc/xqdoc:module/xqdoc:name) then $doc/xqdoc:module/xqdoc:name/text() else fn:false(),
+          "variables" : if ($doc/xqdoc:variables) then array-node { xq:variables($doc/xqdoc:variables/xqdoc:variable, $doc/xqdoc:module/xqdoc:uri/text()) } else fn:false(),
+          "imports" : if ($doc/xqdoc:imports) then array-node { xq:imports($doc/xqdoc:imports/xqdoc:import) } else fn:false(),
+          "functions" : if ($doc/xqdoc:functions) then array-node { xq:functions($doc/xqdoc:functions/xqdoc:function, $doc/xqdoc:module/xqdoc:uri/text()) } else fn:false()
         } else fn:false()
       } 
     }

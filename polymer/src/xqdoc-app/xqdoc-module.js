@@ -23,6 +23,10 @@ class XQDocModule extends PolymerElement {
     </style>
       <paper-card>
         <div class="card-content">
+          <h2>[[item.uri]]</h2>
+          <template is="dom-if" if="[[item.comment]]">
+          <div>[[item.comment.description]]</div>
+          </template>
         </div>
       </paper-card>
     `;

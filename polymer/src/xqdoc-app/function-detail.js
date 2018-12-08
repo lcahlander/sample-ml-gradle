@@ -45,6 +45,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
     </style>
       <paper-card>
         <div class="card-content">
+          <div>[[item.name]]</div>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
           <iron-collapse id="contentCollapse" opened="{{expanded}}">

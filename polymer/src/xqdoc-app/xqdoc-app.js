@@ -8,7 +8,9 @@ import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import '@polymer/app-layout/demo/sample-content.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/paper-item/paper-item.js';
 import '@polymer/paper-card/paper-card.js';
 import '@polymer/iron-location/iron-location.js';
 import '@polymer/iron-location/iron-query-params.js';
@@ -56,12 +58,25 @@ class XqdocApp extends PolymerElement {
       </style>
       <iron-location id="sourceLocation" query="{{query}}"></iron-location>
       <iron-query-params id="sourceParams" params-string="{{query}}" params-object="{{params}}"></iron-query-params>
+      <iron-ajax auto="true" 
+        url="/v1/resources/xqdoc"  
+        params="[[params]]"
+        handle-as="json"
+        last-response="{{result}}"></iron-ajax>
       <app-drawer-layout>
         <app-drawer slot="drawer">
           <app-toolbar>
             <div main-title>Modules</div>
           </app-toolbar>
         <section>
+          <h3>Libraries</h3>
+          <template is="dom-repeat" items="{{result.modules.libraries}}">
+            <paper-item>{{item.uri}}</paper-item>
+          </template>
+          <h3>Main</h3>
+          <template is="dom-repeat" items="{{result.modules.main}}">
+            <paper-item>{{item.uri}}</paper-item>
+          </template>
           <div style="margin-bottom:90px;width:100%;"></div>
         </section>
         </app-drawer>
@@ -73,17 +88,26 @@ class XqdocApp extends PolymerElement {
           </app-toolbar>
           </app-header>
         <section>
-          <xqdoc-module item="{{item}}"></xqdoc-module>
-          <template is="dom-repeat" items="{{result.variables}}">
-            <variable-detail item="{{item}}"></variable-detail>
+          <xqdoc-module item="{{result.response}}"></xqdoc-module>
+          <template is="dom-if" if="{{result.response.variables}}">
+            <h3>Variables</h3>
+            <template is="dom-repeat" items="{{result.response.variables}}">
+              <variable-detail item="{{item}}"></variable-detail>
+            </template>
           </template>
-          <template is="dom-repeat" items="{{result.imports}}">
-            <import-detail item="{{item}}"></import-detail>
+          <template is="dom-if" if="{{result.response.imports}}">
+            <h3>Imports</h3>
+            <template is="dom-repeat" items="{{result.response.imports}}">
+              <import-detail item="{{item}}"></import-detail>
+            </template>
           </template>
-          <template is="dom-repeat" items="{{result.functions}}">
-            <function-detail item="{{item}}"></function-detail>
+          <template is="dom-if" if="{{result.response.functions}}">
+            <h3>Functions</h3>
+            <template is="dom-repeat" items="{{result.response.functions}}">
+              <function-detail item="{{item}}"></function-detail>
+            </template>
           </template>
-          <paper-card>Created by xqDoc version 1.1 on 2018-12-04T07:21:10.778-05:00</paper-card>
+          <paper-card>Created by xqDoc version [[result.response.control.version]] on [[result.response.control.date]]</paper-card>
           <div style="margin-bottom:200px;height:150px;width:100%;"></div>
         </section>
         </app-header-layout>

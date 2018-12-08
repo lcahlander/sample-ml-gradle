@@ -23,6 +23,7 @@ class ImportDetail extends PolymerElement {
     </style>
       <paper-card>
         <div class="card-content">
+          <div>[[item.uri]]</div>
         </div>
       </paper-card>
     `;

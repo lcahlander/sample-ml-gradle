@@ -5,7 +5,7 @@ import '@polymer/paper-card/paper-card.js';
  * @customElement
  * @polymer
  */
-class VariableDetail extends GestureEventListeners(PolymerElement) {
+class VariableDetail extends PolymerElement {
   static get template() {
     return html`
     <style>
@@ -23,6 +23,7 @@ class VariableDetail extends GestureEventListeners(PolymerElement) {
     </style>
       <paper-card>
         <div class="card-content">
+          <div>[[item.name]]</div>
         </div>
       </paper-card>
     `;
