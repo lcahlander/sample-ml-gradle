@@ -1,4 +1,5 @@
 import { html, PolymerElement } from "../../node_modules/@polymer/polymer/polymer-element.js";
+import "../../node_modules/@polymer/polymer/lib/elements/dom-bind.js";
 import "../../node_modules/@polymer/app-layout/app-drawer-layout/app-drawer-layout.js";
 import "../../node_modules/@polymer/app-layout/app-drawer/app-drawer.js";
 import "../../node_modules/@polymer/app-layout/app-scroll-effects/app-scroll-effects.js";
@@ -12,6 +13,7 @@ import "../../node_modules/@polymer/iron-ajax/iron-ajax.js";
 import "../../node_modules/@polymer/paper-icon-button/paper-icon-button.js";
 import "../../node_modules/@polymer/paper-item/paper-item.js";
 import "../../node_modules/@polymer/paper-card/paper-card.js";
+import "../../node_modules/@polymer/paper-listbox/paper-listbox.js";
 import "../../node_modules/@polymer/iron-location/iron-location.js";
 import "../../node_modules/@polymer/iron-location/iron-query-params.js";
 import './module-selector.js';
@@ -31,6 +33,7 @@ class XqdocApp extends PolymerElement {
         :host {
           display: block;
           background-color: lightgrey;
+          --app-drawer-width: 400px;
         }
         app-drawer-layout {
           background-color: lightgrey;
@@ -66,14 +69,16 @@ class XqdocApp extends PolymerElement {
             <div main-title>Modules</div>
           </app-toolbar>
         <section>
+        <paper-listbox attr-for-selected="item-name" selected="{{selectedSuggestionId}}" fallback-selection="None">
           <h3>Libraries</h3>
-          <template is="dom-repeat" items="{{result.modules.libraries}}">
-            <paper-item>{{item.uri}}</paper-item>
+          <template is="dom-repeat" items="[[result.modules.libraries]]">
+            <paper-item item-name="[[item.uri]]">[[item.uri]]</paper-item>
           </template>
-          <h3>Main</h3>
-          <template is="dom-repeat" items="{{result.modules.main}}">
-            <paper-item>{{item.uri}}</paper-item>
+          <h3>Mains</h3>
+          <template is="dom-repeat" items="[[result.modules.main]]">
+            <paper-item item-name="[[item.uri]]">[[item.uri]]</paper-item>
           </template>
+        </paper-listbox>
           <div style="margin-bottom:90px;width:100%;"></div>
         </section>
         </app-drawer>
@@ -121,8 +126,26 @@ class XqdocApp extends PolymerElement {
       params: {
         type: Object,
         notify: true
+      },
+      selectedSuggestionId: {
+        type: String,
+        notify: true,
+        observer: '_moduleSelected'
       }
     };
+  }
+
+  _moduleSelected(newValue, oldValue) {
+    if (newValue != 'None') {
+      var p = this.get('params');
+
+      if (p['rs:module'] != newValue) {
+        this.set('params', {
+          'rs:module': newValue
+        });
+        this.notifyPath('params');
+      }
+    }
   }
 
 }

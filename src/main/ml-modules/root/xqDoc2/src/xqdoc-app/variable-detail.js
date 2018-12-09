@@ -1,5 +1,6 @@
 import { PolymerElement, html } from "../../node_modules/@polymer/polymer/polymer-element.js";
 import "../../node_modules/@polymer/paper-card/paper-card.js";
+import './xqdoc-comment.js';
 /**
  * @customElement
  * @polymer
@@ -24,6 +25,7 @@ class VariableDetail extends PolymerElement {
       <paper-card>
         <div class="card-content">
           <div>[[item.name]]</div>
+          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
         </div>
       </paper-card>
     `;

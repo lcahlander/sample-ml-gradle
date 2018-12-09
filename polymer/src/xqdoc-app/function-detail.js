@@ -6,6 +6,7 @@ import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-button/paper-button.js';
 import '@vaadin/vaadin-grid/vaadin-grid.js';
+import './xqdoc-comment.js';
 
 /**
  * @customElement
@@ -20,6 +21,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         }
       paper-card {
         width: 100%;
+        margin-bottom: 5px;
       }
       .conceptcard {
         background-color: #fafafa;
@@ -45,7 +47,8 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
     </style>
       <paper-card>
         <div class="card-content">
-          <div>[[item.name]]</div>
+          <h3>[[item.name]]</h3>
+          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
           <iron-collapse id="contentCollapse" opened="{{expanded}}">

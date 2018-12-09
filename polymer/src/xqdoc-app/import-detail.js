@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-card/paper-card.js';
+import './xqdoc-comment.js';
 
 /**
  * @customElement
@@ -24,6 +25,7 @@ class ImportDetail extends PolymerElement {
       <paper-card>
         <div class="card-content">
           <div>[[item.uri]]</div>
+          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
         </div>
       </paper-card>
     `;

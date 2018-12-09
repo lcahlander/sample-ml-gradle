@@ -1,5 +1,6 @@
 import { PolymerElement, html } from "../../node_modules/@polymer/polymer/polymer-element.js";
 import "../../node_modules/@polymer/paper-card/paper-card.js";
+import './xqdoc-comment.js';
 /**
  * @customElement
  * @polymer
@@ -21,12 +22,11 @@ class XQDocModule extends PolymerElement {
         font-size: 10px;
       }
     </style>
+      <h3>Module</h3>
       <paper-card>
         <div class="card-content">
           <h2>[[item.uri]]</h2>
-          <template is="dom-if" if="[[item.comment]]">
-          <div>[[item.comment.description]]</div>
-          </template>
+          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
         </div>
       </paper-card>
     `;

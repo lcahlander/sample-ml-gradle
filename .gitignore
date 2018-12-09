@@ -4,3 +4,5 @@
 /xqDoc/services
 /xqDoc/root
 /.gradle
+/polymer/build
+/newProject.xpr
