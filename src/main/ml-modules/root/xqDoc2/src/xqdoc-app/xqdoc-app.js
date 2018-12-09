@@ -90,23 +90,25 @@ class XqdocApp extends PolymerElement {
           </app-toolbar>
           </app-header>
         <section>
-          <xqdoc-module item="{{result.response}}"></xqdoc-module>
-          <template is="dom-if" if="{{result.response.variables}}">
-            <h3>Variables</h3>
-            <template is="dom-repeat" items="{{result.response.variables}}">
-              <variable-detail item="{{item}}"></variable-detail>
+          <template is="dom-if" if="{{result.response.uri}}">
+            <xqdoc-module item="{{result.response}}"></xqdoc-module>
+            <template is="dom-if" if="{{result.response.variables}}">
+              <h3>Variables</h3>
+              <template is="dom-repeat" items="{{result.response.variables}}">
+                <variable-detail item="{{item}}"></variable-detail>
+              </template>
             </template>
-          </template>
-          <template is="dom-if" if="{{result.response.imports}}">
-            <h3>Imports</h3>
-            <template is="dom-repeat" items="{{result.response.imports}}">
-              <import-detail item="{{item}}"></import-detail>
+            <template is="dom-if" if="{{result.response.imports}}">
+              <h3>Imports</h3>
+              <template is="dom-repeat" items="{{result.response.imports}}">
+                <import-detail item="{{item}}"></import-detail>
+              </template>
             </template>
-          </template>
-          <template is="dom-if" if="{{result.response.functions}}">
-            <h3>Functions</h3>
-            <template is="dom-repeat" items="{{result.response.functions}}">
-              <function-detail item="{{item}}"></function-detail>
+            <template is="dom-if" if="{{result.response.functions}}">
+              <h3>Functions</h3>
+              <template is="dom-repeat" items="{{result.response.functions}}">
+                <function-detail item="{{item}}"></function-detail>
+              </template>
             </template>
           </template>
           <paper-card>Created by xqDoc version [[result.response.control.version]] on [[result.response.control.date]]</paper-card>

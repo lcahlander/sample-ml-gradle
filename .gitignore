@@ -6,3 +6,4 @@
 /.gradle
 /polymer/build
 /newProject.xpr
+/polymer/package-lock.json
