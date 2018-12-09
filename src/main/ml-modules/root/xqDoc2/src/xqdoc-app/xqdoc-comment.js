@@ -1,4 +1,5 @@
 import { PolymerElement, html } from "../../node_modules/@polymer/polymer/polymer-element.js";
+import "../../node_modules/@intcreator/markdown-element/markdown-element.js";
 /**
  * @customElement
  * @polymer
@@ -13,7 +14,7 @@ class XQDocComment extends PolymerElement {
         }
     </style>
     <template is="dom-if" if="[[comment]]">
-    <div>[[comment.description]]</div>
+    <markdown-element markdown="[[comment.description]]"></markdown-element>
     <ul>
       <template is="dom-repeat" items="{{comment.authors}}">
         <li><b>author</b> [[item]]</li>

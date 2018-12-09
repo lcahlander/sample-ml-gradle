@@ -1,6 +1,7 @@
 import { PolymerElement, html } from "../../node_modules/@polymer/polymer/polymer-element.js";
 import { GestureEventListeners } from "../../node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js";
 import "../../node_modules/@polymer/paper-card/paper-card.js";
+import "../../node_modules/polymer-code-highlighter/code-highlighter.js";
 import "../../node_modules/@polymer/iron-collapse/iron-collapse.js";
 import "../../node_modules/@polymer/iron-icons/iron-icons.js";
 import "../../node_modules/@polymer/paper-icon-button/paper-icon-button.js";
@@ -41,6 +42,9 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         padding-top: 1px;
         padding-bottom: 1px;
       }
+      code-highlighter {
+        overflow: scroll;
+      }
       ul.cptInstanceMetadata {
         list-style: none;
       }
@@ -49,10 +53,12 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         <div class="card-content">
           <h3>[[item.name]]</h3>
           <xqdoc-comment comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
+          <code-highlighter>[[item.signature]]</code-highlighter>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
           <iron-collapse id="contentCollapse" opened="{{expanded}}">
             <div class="conceptcard">
+              <code-highlighter>[[item.body]]</code-highlighter>
             </div>
           </iron-collapse>
         </div>
