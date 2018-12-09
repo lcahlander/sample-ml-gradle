@@ -12,6 +12,8 @@ in a Polymer 3 webpage.
  :)
 module namespace xq = "http://marklogic.com/rest-api/resource/xqdoc";
 import module namespace json="http://marklogic.com/xdmp/json" at "/MarkLogic/json/json.xqy";
+
+declare namespace rapi = "http://marklogic.com/rest-api";
  
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
@@ -61,11 +63,25 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
   for $function in $functions
   let $name := fn:string-join($function/xqdoc:name/text())
   let $function-comment := $function/xqdoc:comment
+  order by $name
   return
     object-node {
       "comment" : xq:comment($function-comment), 
       "name" : $name,
       "signature" : fn:string-join($function/xqdoc:signature/text(), " "),
+      "annotations" : 
+        array-node {
+          for $annotation in $function/xqdoc:annotations/xqdoc:annotation
+          return
+            object-node {
+              "name" : xs:string($annotation/@name),
+              "literals" : 
+                array-node {
+                  for $literal in $annotation/xqdoc:literal
+                  return xs:string($literal)
+                }
+            }
+        },
       "parameters" : array-node {
                         for $parameter in $function/xqdoc:parameters/xqdoc:parameter
                         return 
@@ -380,7 +396,7 @@ declare function xq:put(
  @since 1.0
  @custom:openapi-ignore Yes
  :)
-declare function xq:post(
+declare %rapi:transaction-mode("update") function xq:post(
   $context as map:map,
   $params  as map:map,
   $input   as document-node()*
