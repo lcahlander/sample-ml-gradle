@@ -33,13 +33,32 @@ class XQDocComment extends PolymerElement {
       <template is="dom-repeat" items="{{comment.since}}">
         <li><b>since</b> [[item]]</li>
       </template>
+      <template is="dom-repeat" items="{{parameters}}">
+        <li><b>parameter</b> $[[item.name]] - [[item.type]]
+            <template is="dom-if" if="[[item.occurrence]]">
+            [[item.occurrence]]
+            </template>
+        </li>
+      </template>
+      <template is="dom-if" if="[[return]]">
+        <li><b>return</b> [[return.type]]
+          <template is="dom-if" if="[[return.occurrence]]">
+          [[return.occurrence]]
+          </template>
+          <template is="dom-if" if="[[comment.return]]">
+          - [[comment.return]]
+          </template>
+        </li>
+      </template>
     </ul>
     </template>
     `;
   }
   static get properties() {
     return {
-      comment: { type: Object, notify: true }
+      comment: { type: Object },
+      parameters: { type: Array },
+      return: { type: Object }
     };
   }
 

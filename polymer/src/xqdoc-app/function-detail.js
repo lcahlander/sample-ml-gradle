@@ -48,7 +48,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       <paper-card>
         <div class="card-content">
           <h3>[[item.name]]</h3>
-          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
+          <xqdoc-comment comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
           <iron-collapse id="contentCollapse" opened="{{expanded}}">

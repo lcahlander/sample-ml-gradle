@@ -19,6 +19,7 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
 declare variable $xq:XQDOC_COLLECTION as xs:string := "xqdoc"; 
 
 (:~
+  @param $comment the xqdoc:comment element
   @author Loren Cahlander
   @version 1.0
   @since 1.0
@@ -41,6 +42,8 @@ declare function xq:comment($comment as node()?) {
 };
 
 (:~
+  @param $functions
+  @param $module-uri The URI of the selected module
   @author Loren Cahlander
   @version 1.0
   @since 1.0
@@ -54,12 +57,35 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
       "comment" : xq:comment($function-comment), 
       "name" : $name,
       "signature" : fn:string-join($function/xqdoc:signature/text(), " "),
+      "parameters" : array-node {
+                        for $parameter in $function/xqdoc:parameters/xqdoc:parameter
+                        return 
+                          object-node {
+                            "name" : fn:string-join($parameter/xqdoc:name/text(), " "),
+                            "type" : fn:string-join($parameter/xqdoc:type/text(), " "),
+                            "occurrence" : if ($parameter/xqdoc:type/@occurrence) then xs:string($parameter/xqdoc:type/@occurrence) else fn:false()
+                          }
+                     },
+     "return" : if ($function/xqdoc:return) 
+                then 
+                  object-node {
+                      "type" : fn:string-join($function/xqdoc:return/xqdoc:type/text(), " "),
+                      "occurrence" : if ($function/xqdoc:return/xqdoc:type/@occurrence) then xs:string($function/xqdoc:return/xqdoc:type/@occurrence) else fn:false()
+                  } 
+                else fn:false(),
       "invoked" : array-node { xq:invoked($function/xqdoc:invoked, $module-uri) },
       "refVariables" : array-node { xq:ref-variables($function/xqdoc:ref-variable, $module-uri) },
       "references" : array-node { xq:all-function-references(fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc/xqdoc:functions/xqdoc:function/xqdoc:invoked[xqdoc:uri = $module-uri][xqdoc:name = $name], $module-uri) }
     }
 };
 
+(:~
+  @param $invokes
+  @param $module-uri The URI of the selected module
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:invoked($invokes as node()*, $module-uri as xs:string?) {
   for $invoke in $invokes
   let $uri := $invoke/xqdoc:uri/text()
@@ -79,6 +105,13 @@ declare function xq:invoked($invokes as node()*, $module-uri as xs:string?) {
     }
 };
 
+(:~
+  @param $references
+  @param $module-uri The URI of the selected module
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:ref-variables($references as node()*, $module-uri as xs:string?) {
   for $reference in $references
   let $uri := $reference/xqdoc:uri/text()
@@ -98,6 +131,13 @@ declare function xq:ref-variables($references as node()*, $module-uri as xs:stri
     }
 };
 
+(:~
+  @param $references
+  @param $module-uri The URI of the selected module
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:all-variable-references($references as node()*, $module-uri as xs:string?) {
   for $reference in $references
   let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
@@ -109,6 +149,13 @@ declare function xq:all-variable-references($references as node()*, $module-uri 
     }
 };
 
+(:~
+  @param $references
+  @param $module-uri The URI of the selected module
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:all-function-references($references as node()*, $module-uri as xs:string?) {
   for $reference in $references
   let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
@@ -120,6 +167,13 @@ declare function xq:all-function-references($references as node()*, $module-uri 
     }
 };
 
+(:~
+  @param $variables A sequence of the xqdoc:variable elements
+  @param $module-uri The URI of the selected module
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:variables($variables as node()*, $module-uri as xs:string?) {
   for $variable in $variables
   let $uri := $variable/xqdoc:uri/text()
@@ -133,6 +187,12 @@ declare function xq:variables($variables as node()*, $module-uri as xs:string?) 
     }
 };
 
+(:~
+  @param $imports A sequence of the xqdoc:import elements
+  @author Loren Cahlander
+  @version 1.0
+  @since 1.0
+ :)
 declare function xq:imports($imports as node()*) {
   for $import in $imports
   let $uri := $import/xqdoc:uri/text()
