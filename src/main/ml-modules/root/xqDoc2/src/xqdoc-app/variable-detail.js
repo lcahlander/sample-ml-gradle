@@ -26,6 +26,9 @@ class VariableDetail extends PolymerElement {
         <div class="card-content">
           <div>[[item.name]]</div>
           <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
+          <template is="dom-repeat" items="{{item.references}}">
+            <div><a name$="[[item.name]]">[[item.name]]</a></div>
+          </template>
         </div>
       </paper-card>
     `;

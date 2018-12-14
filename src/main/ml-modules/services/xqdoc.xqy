@@ -187,9 +187,11 @@ declare function xq:ref-variables($references as node()*, $module-uri as xs:stri
 declare function xq:all-variable-references($references as node()*, $module-uri as xs:string?) {
   for $reference in $references
   let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
+  let $name := $reference/../xqdoc:name/text()
+  order by $uri, $name
   return 
     object-node { 
-      "name" : $reference/../xqdoc:name/text(), 
+      "name" : $name, 
       "uri": $uri,
       "isInternal" : 
         if ($uri = $module-uri) 

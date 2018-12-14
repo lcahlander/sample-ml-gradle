@@ -1,0 +1,3 @@
+[submodule "src/main/ml-modules/root/modules/xqrs"]
+	path = src/main/ml-modules/root/modules/xqrs
+	url = https://github.com/cfoster/xqrs.git

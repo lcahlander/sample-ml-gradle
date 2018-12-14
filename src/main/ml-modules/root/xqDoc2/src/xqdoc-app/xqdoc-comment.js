@@ -17,7 +17,7 @@ class XQDocComment extends PolymerElement {
     <markdown-element markdown="[[comment.description]]"></markdown-element>
     <ul>
       <template is="dom-repeat" items="{{comment.authors}}">
-        <li><b>author</b> [[item]]</li>
+        <li><b>author</b> <markdown-element markdown="[[item]]"></markdown-element></li>
       </template>
       <template is="dom-repeat" items="{{comment.versions}}">
         <li><b>version</b> [[item]]</li>
