@@ -8,6 +8,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-button/paper-button.js';
 import '@vaadin/vaadin-grid/vaadin-grid.js';
 import './xqdoc-comment.js';
+import './hash-button.js';
 
 /**
  * @customElement
@@ -73,7 +74,8 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         notify: true,
         observer: '_expandedChanged'
       },
-      item: { type: Object, notify: true }
+      item: { type: Object, notify: true },
+      hash: { type: String, notify: true, observer: "_hashChanged" }
     };
   }
 
@@ -88,6 +90,12 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       else {
         this.$.expandButton.icon = "icons:expand-more";
         this.$.expandText.innerHTML = "Show details";
+      }
+    }
+    // Fires when an attribute was added, removed, or updated
+    _hashChanged(newVal, oldVal) {
+      if (newVal && newVal == this.item.name) {
+        
       }
     }
     // Fires when an attribute was added, removed, or updated

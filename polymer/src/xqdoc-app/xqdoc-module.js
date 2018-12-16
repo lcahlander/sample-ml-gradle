@@ -43,7 +43,7 @@ class XQDocModule extends PolymerElement {
         list-style: none;
       }
     </style>
-      <h3>Module</h3>
+      <paper-card><h3>Module</h3></paper-card>
       <paper-card>
         <div class="card-content">
           <h2>[[item.uri]]</h2>

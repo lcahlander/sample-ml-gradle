@@ -46,6 +46,9 @@ class XqdocApp extends PolymerElement {
           height: 100%;
           background-color: lightgrey;
         }
+      paper-card {
+        width: 100%;
+      }
         paper-item {
           cursor: pointer;
         }
@@ -59,7 +62,7 @@ class XqdocApp extends PolymerElement {
         color: #fff;
       }
       </style>
-      <iron-location id="sourceLocation" query="{{query}}"></iron-location>
+      <iron-location id="sourceLocation" query="{{query}}" hash="{{hash}}"></iron-location>
       <iron-query-params id="sourceParams" params-string="{{query}}" params-object="{{params}}"></iron-query-params>
       <iron-ajax auto="true" 
         url="/v1/resources/xqdoc"  
@@ -96,21 +99,21 @@ class XqdocApp extends PolymerElement {
           <template is="dom-if" if="{{result.response.uri}}">
             <xqdoc-module item="{{result.response}}"></xqdoc-module>
             <template is="dom-if" if="{{result.response.variables}}">
-              <h3>Variables</h3>
+              <paper-card><h3>Variables</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.variables}}">
-                <variable-detail item="{{item}}"></variable-detail>
+                <variable-detail item="{{item}}" hash="{{hash}}"></variable-detail>
               </template>
             </template>
             <template is="dom-if" if="{{result.response.imports}}">
-              <h3>Imports</h3>
+              <paper-card><h3>Imports</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.imports}}">
                 <import-detail item="{{item}}"></import-detail>
               </template>
             </template>
             <template is="dom-if" if="{{result.response.functions}}">
-              <h3>Functions</h3>
+              <paper-card><h3>Functions</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.functions}}">
-                <function-detail item="{{item}}"></function-detail>
+                <function-detail item="{{item}}" has="{{hash}}"></function-detail>
               </template>
             </template>
           </template>
@@ -125,6 +128,7 @@ class XqdocApp extends PolymerElement {
     return {
       result: { type: Object, notify: true },
       params: { type: Object, notify: true },
+      hash: { type: String, notify: true },
       selectedSuggestionId: { type: String, notify: true, observer: '_moduleSelected' }
     };
   }
