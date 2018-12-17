@@ -101,7 +101,7 @@ class XqdocApp extends PolymerElement {
             <template is="dom-if" if="{{result.response.variables}}">
               <paper-card><h3>Variables</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.variables}}">
-                <variable-detail item="{{item}}" hash="{{hash}}"></variable-detail>
+                <variable-detail item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
               </template>
             </template>
             <template is="dom-if" if="{{result.response.imports}}">
@@ -113,7 +113,7 @@ class XqdocApp extends PolymerElement {
             <template is="dom-if" if="{{result.response.functions}}">
               <paper-card><h3>Functions</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.functions}}">
-                <function-detail item="{{item}}" has="{{hash}}"></function-detail>
+                <function-detail item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
               </template>
             </template>
           </template>
@@ -138,6 +138,7 @@ class XqdocApp extends PolymerElement {
       var p = this.get('params');
       if (p['rs:module'] != newValue) {
         this.set( 'params', { 'rs:module' : newValue }  );
+        this.set( 'hash', '');
         this.notifyPath('params');
       }
     }

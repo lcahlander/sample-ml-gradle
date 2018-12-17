@@ -25,11 +25,31 @@ class VariableDetail extends PolymerElement {
     </style>
       <paper-card>
         <div class="card-content">
-          <div>[[item.name]]</div>
-          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
-          <template is="dom-repeat" items="{{item.references}}">
-            <hash-button name="[[item.name]]" hash="{{hash}}"></hash-button>
-          </template>
+          <table>
+            <tr>
+              <td>$[[item.name]]</td>
+              <td><xqdoc-comment comment="[[item.comment]]"></xqdoc-comment></td>
+            </tr>
+          </table>
+          <h4>Functions that reference this Variable</h4>
+          <table width="100%">
+            <tr>
+              <th>Module URI</th>
+              <th>Function Name</th>
+            </tr>
+            <template is="dom-repeat" items="{{item.references}}">
+              <tr>
+                <td>[[item.uri]]</td>
+                <td>
+                  <template is="dom-repeat" items="{{item.functions}}">
+                    <template is="dom-if" if="[[item.isInternal]]">
+                      <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                    </template>
+                  </template>
+                </td>
+              </tr>
+            </template>
+          </table>
         </div>
       </paper-card>
     `;
@@ -37,6 +57,7 @@ class VariableDetail extends PolymerElement {
   static get properties() {
     return {
       item: { type: Object, notify: true },
+      params: { type: Object, notify: true },
       hash: { type: String, notify: true }
     };
   }

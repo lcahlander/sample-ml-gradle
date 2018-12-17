@@ -8,18 +8,24 @@ import '@polymer/paper-button/paper-button.js';
 class HashButton extends PolymerElement {
   static get template() {
     return html`
-    <paper-button raised on-click="selectLink">[[name]]</paper-button>
+    <paper-button disabled="[[disabled]]" raised on-click="selectLink">[[name]]</paper-button>
     `;
   }
   static get properties() {
     return {
       name: { type: String, notify: true },
+      uri: { type: String, notify: true  },
+      disabled: { type: Boolean, value: false },
+      params: { type: Object, notify: true },
       hash: { type: String, notify: true }
     };
   }
 
   selectLink() {
     this.hash = this.name;
+    if (this.params.module != this.uri) {
+      this.params.module = this.uri;
+    }
   }
 
 }

@@ -55,6 +55,63 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
           <h3>[[item.name]]</h3>
           <xqdoc-comment comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
           <code-highlighter>[[item.signature]]</code-highlighter>
+          <template is="dom-if" if="{{_showInvoked(item)}}">
+          <h4>Functions that are invoked in this function</h4>
+          <table width="100%">
+            <tr>
+              <th>Module URI</th>
+              <th>Function Name</th>
+            </tr>
+            <template is="dom-repeat" items="{{item.invoked}}">
+              <tr>
+                <td>[[item.uri]]</td>
+                <td>
+                  <template is="dom-repeat" items="{{item.functions}}">
+                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                  </template>
+                </td>
+              </tr>
+            </template>
+          </table>
+          </template>
+          <template is="dom-if" if="{{_showRefVariables(item)}}">
+          <h4>Variables that are referred to in this function</h4>
+          <table width="100%">
+            <tr>
+              <th>Module URI</th>
+              <th>Variable Name</th>
+            </tr>
+            <template is="dom-repeat" items="{{item.refVariables}}">
+              <tr>
+                <td>[[item.uri]]</td>
+                <td>
+                  <template is="dom-repeat" items="{{item.variables}}">
+                    <paper-button noink>$[[item.name]]</paper-button>
+                  </template>
+                </td>
+              </tr>
+            </template>
+          </table>
+          </template>
+          <template is="dom-if" if="{{_showReferences(item)}}">
+          <h4>Functions that are invoke this function</h4>
+          <table width="100%">
+            <tr>
+              <th>Module URI</th>
+              <th>Function Name</th>
+            </tr>
+            <template is="dom-repeat" items="{{item.references}}">
+              <tr>
+                <td>[[item.uri]]</td>
+                <td>
+                  <template is="dom-repeat" items="{{item.functions}}">
+                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                  </template>
+                </td>
+              </tr>
+            </template>
+          </table>
+          </template>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
           <iron-collapse id="contentCollapse" opened="{{expanded}}">
@@ -75,6 +132,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         observer: '_expandedChanged'
       },
       item: { type: Object, notify: true },
+      params: { type: Object, notify: true },
       hash: { type: String, notify: true, observer: "_hashChanged" }
     };
   }
@@ -92,6 +150,31 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         this.$.expandText.innerHTML = "Show details";
       }
     }
+
+    _showInvoked(item) {
+      if (item.invoked.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    _showRefVariables(item) {
+      if (item.refVariables.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    _showReferences(item) {
+      if (item.references.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     // Fires when an attribute was added, removed, or updated
     _hashChanged(newVal, oldVal) {
       if (newVal && newVal == this.item.name) {

@@ -132,21 +132,31 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
   @since 1.0
  :)
 declare function xq:invoked($invokes as node()*, $module-uri as xs:string?) {
-  for $invoke in $invokes
-  let $uri := $invoke/xqdoc:uri/text()
-  let $name := $invoke/xqdoc:name/text()
-  return
+  for $uri in fn:distinct-values($invokes/xqdoc:uri/text())
+  order by $uri
+  return 
     object-node {
-      "uri" : $uri,
-      "name" : $name,
-      "isReachable" : 
-            if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:functions/xqdoc:function/xqdoc:name = $name])
-            then fn:true()
-            else fn:false(),
-      "isInternal" :
-            if ($invoke/xqdoc:uri/text() = $module-uri)
-            then fn:true()
-            else fn:false()
+      "uri": $uri,
+      "functions": 
+          array-node {
+            for $invoke in $invokes[xqdoc:uri = $uri]
+            let $name := $invoke/xqdoc:name/text()
+            order by $name
+            return
+              object-node {
+                "uri" : $uri,
+                "name" : $name,
+                "isReachable" : 
+                      if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:functions/xqdoc:function/xqdoc:name = $name])
+                      then fn:true()
+                      else fn:false(),
+                "isInternal" :
+                      if ($invoke/xqdoc:uri/text() = $module-uri)
+                      then fn:true()
+                      else fn:false()
+              }
+
+          }
     }
 };
 
@@ -159,21 +169,31 @@ declare function xq:invoked($invokes as node()*, $module-uri as xs:string?) {
   @since 1.0
  :)
 declare function xq:ref-variables($references as node()*, $module-uri as xs:string?) {
-  for $reference in $references
-  let $uri := $reference/xqdoc:uri/text()
-  let $name := $reference/xqdoc:name/text()
-  return
+  for $uri in fn:distinct-values($references/xqdoc:uri/text())
+  order by $uri
+  return 
     object-node {
-      "uri" : $uri,
-      "name" : $name,
-      "isReachable" : 
-            if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:variables/xqdoc:variable/xqdoc:name = $name])
-            then fn:true()
-            else fn:false(),
-      "isInternal" :
-            if ($reference/xqdoc:uri/text() = $module-uri)
-            then fn:true()
-            else fn:false()
+      "uri": $uri,
+      "variables": 
+          array-node {
+            for $reference in $references[xqdoc:uri = $uri]
+            let $name := $reference/xqdoc:name/text()
+            order by $name
+            return
+              object-node {
+                "uri" : $uri,
+                "name" : $name,
+                "isReachable" : 
+                      if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:variables/xqdoc:variable/xqdoc:name = $name])
+                      then fn:true()
+                      else fn:false(),
+                "isInternal" :
+                      if ($reference/xqdoc:uri/text() = $module-uri)
+                      then fn:true()
+                      else fn:false()
+              }
+
+          }
     }
 };
 
@@ -185,19 +205,42 @@ declare function xq:ref-variables($references as node()*, $module-uri as xs:stri
   @since 1.0
  :)
 declare function xq:all-variable-references($references as node()*, $module-uri as xs:string?) {
-  for $reference in $references
-  let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
-  let $name := $reference/../xqdoc:name/text()
-  order by $uri, $name
-  return 
-    object-node { 
-      "name" : $name, 
-      "uri": $uri,
-      "isInternal" : 
-        if ($uri = $module-uri) 
-        then fn:true() 
-        else fn:false()
-    }
+  let $uris := fn:distinct-values( 
+      for $reference in $references
+      let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
+      order by $uri
+      return $uri
+  )
+  return
+    for $uri in $uris
+    return 
+      object-node {
+        "uri": $uri,
+        "functions": 
+          array-node {
+            for $reference in $references
+            let $testuri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
+            let $name := $reference/../xqdoc:name/text()
+            order by $name
+            return 
+              if ($testuri = $uri)
+              then
+                object-node { 
+                  "name" : $name, 
+                  "uri": $uri,
+                  "isReachable" : 
+                        if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:functions/xqdoc:function/xqdoc:name = $name])
+                        then fn:true()
+                        else fn:false(),
+                  "isInternal" : 
+                    if ($uri = $module-uri) 
+                    then fn:true() 
+                    else fn:false()
+                }            
+              else ()
+          }
+
+      }
 };
 
 (:~
@@ -208,17 +251,42 @@ declare function xq:all-variable-references($references as node()*, $module-uri 
   @since 1.0
  :)
 declare function xq:all-function-references($references as node()*, $module-uri as xs:string?) {
-  for $reference in $references
-  let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
-  return 
-    object-node { 
-      "name" : $reference/../xqdoc:name/text(), 
-      "uri": $uri,
-      "isInternal" : 
-        if ($uri = $module-uri) 
-        then fn:true() 
-        else fn:false()
-    }
+  let $uris := fn:distinct-values( 
+      for $reference in $references
+      let $uri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
+      order by $uri
+      return $uri
+  )
+  return
+    for $uri in $uris
+    return 
+      object-node {
+        "uri": $uri,
+        "functions": 
+          array-node {
+            for $reference in $references
+            let $testuri := $reference/fn:root()//xqdoc:module/xqdoc:uri/text()
+            let $name := $reference/../xqdoc:name/text()
+            order by $name
+            return 
+              if ($testuri = $uri)
+              then
+                object-node { 
+                  "name" : $name, 
+                  "uri": $uri,
+                  "isReachable" : 
+                        if (fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $uri][xqdoc:functions/xqdoc:function/xqdoc:name = $name])
+                        then fn:true()
+                        else fn:false(),
+                  "isInternal" : 
+                    if ($uri = $module-uri) 
+                    then fn:true() 
+                    else fn:false()
+                }            
+              else ()
+          }
+
+      }
 };
 
 (:~
