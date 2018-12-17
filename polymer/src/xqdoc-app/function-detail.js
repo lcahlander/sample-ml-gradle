@@ -55,6 +55,23 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
           <h3>[[item.name]]</h3>
           <xqdoc-comment show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
           <code-highlighter>[[item.signature]]</code-highlighter>
+          <template is="dom-if" if="{{_showAnnotations(item)}}">
+            <h4>Annotations</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.annotations]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Name</template>
+                <template>[[item.name]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Literals</template>
+                <template>
+                  <template is="dom-repeat" items="{{item.literals}}">
+                    <paper-button class="label" noink>[[item]]</paper-button>
+                  </template>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
           <template is="dom-if" if="{{_showInvoked(item)}}">
             <h4>Functions that are invoked in this function</h4>
             <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
@@ -143,6 +160,14 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       else {
         this.$.expandButton.icon = "icons:expand-more";
         this.$.expandText.innerHTML = "Show details";
+      }
+    }
+
+    _showAnnotations(item) {
+      if (item.annotations.length > 0) {
+        return true;
+      } else {
+        return false;
       }
     }
 
