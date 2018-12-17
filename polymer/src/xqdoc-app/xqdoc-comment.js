@@ -13,6 +13,11 @@ class XQDocComment extends PolymerElement {
         display: block;
         }
     </style>
+    <template is="dom-if" if="[[!comment]]">
+      <template is="dom-if" if="[[showHealth]]">
+        <h1>NO COMMENT<h1>
+      </template>
+    </template>
     <template is="dom-if" if="[[comment]]">
     <markdown-element markdown="[[comment.description]]"></markdown-element>
     <ul>
@@ -58,6 +63,7 @@ class XQDocComment extends PolymerElement {
   static get properties() {
     return {
       comment: { type: Object },
+      showHealth: { type: Boolean, notify: true },
       parameters: { type: Array },
       return: { type: Object }
     };

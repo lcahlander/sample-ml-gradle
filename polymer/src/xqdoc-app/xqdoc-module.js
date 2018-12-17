@@ -47,7 +47,7 @@ class XQDocModule extends PolymerElement {
       <paper-card>
         <div class="card-content">
           <h2>[[item.uri]]</h2>
-          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
+          <xqdoc-comment show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
         </div>
         <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
         <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
@@ -67,6 +67,7 @@ class XQDocModule extends PolymerElement {
         notify: true,
         observer: '_expandedChanged'
       },
+      showHealth: { type: Boolean, notify: true },
       item: { type: Object, notify: true }
     };
   }

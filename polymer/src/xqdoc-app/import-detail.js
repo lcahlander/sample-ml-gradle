@@ -25,13 +25,14 @@ class ImportDetail extends PolymerElement {
       <paper-card>
         <div class="card-content">
           <div>[[item.uri]]</div>
-          <xqdoc-comment comment="[[item.comment]]"></xqdoc-comment>
+          <xqdoc-comment show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
         </div>
       </paper-card>
     `;
   }
   static get properties() {
     return {
+      showHealth: { type: Boolean, notify: true },
       item: { type: Object, notify: true }
     };
   }

@@ -8,6 +8,12 @@ import '@polymer/paper-button/paper-button.js';
 class HashButton extends PolymerElement {
   static get template() {
     return html`
+    <style>
+    paper-button {
+      padding-top: 4px;
+      padding-bottom: 3px;
+    }
+    </style>
     <paper-button disabled="[[disabled]]" raised on-click="selectLink">[[name]]</paper-button>
     `;
   }

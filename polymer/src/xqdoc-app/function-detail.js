@@ -53,64 +53,58 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       <paper-card>
         <div class="card-content">
           <h3>[[item.name]]</h3>
-          <xqdoc-comment comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
+          <xqdoc-comment show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
           <code-highlighter>[[item.signature]]</code-highlighter>
           <template is="dom-if" if="{{_showInvoked(item)}}">
-          <h4>Functions that are invoked in this function</h4>
-          <table width="100%">
-            <tr>
-              <th>Module URI</th>
-              <th>Function Name</th>
-            </tr>
-            <template is="dom-repeat" items="{{item.invoked}}">
-              <tr>
-                <td>[[item.uri]]</td>
-                <td>
+            <h4>Functions that are invoked in this function</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Function Names</template>
+                <template>
                   <template is="dom-repeat" items="{{item.functions}}">
                     <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
                   </template>
-                </td>
-              </tr>
-            </template>
-          </table>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
           </template>
           <template is="dom-if" if="{{_showRefVariables(item)}}">
-          <h4>Variables that are referred to in this function</h4>
-          <table width="100%">
-            <tr>
-              <th>Module URI</th>
-              <th>Variable Name</th>
-            </tr>
-            <template is="dom-repeat" items="{{item.refVariables}}">
-              <tr>
-                <td>[[item.uri]]</td>
-                <td>
+            <h4>Variables that are referred to in this function</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.refVariables]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Variable Names</template>
+                <template>
                   <template is="dom-repeat" items="{{item.variables}}">
-                    <paper-button noink>$[[item.name]]</paper-button>
+                    <paper-button class="label" noink>$[[item.name]]</paper-button>
                   </template>
-                </td>
-              </tr>
-            </template>
-          </table>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
           </template>
           <template is="dom-if" if="{{_showReferences(item)}}">
-          <h4>Functions that are invoke this function</h4>
-          <table width="100%">
-            <tr>
-              <th>Module URI</th>
-              <th>Function Name</th>
-            </tr>
-            <template is="dom-repeat" items="{{item.references}}">
-              <tr>
-                <td>[[item.uri]]</td>
-                <td>
+            <h4>Functions that invoke this function</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.references]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Function Names</template>
+                <template>
                   <template is="dom-repeat" items="{{item.functions}}">
                     <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
                   </template>
-                </td>
-              </tr>
-            </template>
-          </table>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
           </template>
           <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
           <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
@@ -133,6 +127,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       },
       item: { type: Object, notify: true },
       params: { type: Object, notify: true },
+      showHealth: { type: Boolean, notify: true },
       hash: { type: String, notify: true, observer: "_hashChanged" }
     };
   }

@@ -6,6 +6,7 @@ import '@polymer/app-layout/app-scroll-effects/app-scroll-effects.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-header-layout/app-header-layout.js';
 import '@polymer/app-layout/app-toolbar/app-toolbar.js';
+import '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@polymer/app-layout/demo/sample-content.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icon/iron-icon.js';
@@ -93,27 +94,28 @@ class XqdocApp extends PolymerElement {
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>xqDoc</div>
+            <paper-toggle-button checked="{{showHealth}}">Show Documentation Health</paper-toggle-button>
           </app-toolbar>
           </app-header>
         <section>
           <template is="dom-if" if="{{result.response.uri}}">
-            <xqdoc-module item="{{result.response}}"></xqdoc-module>
+            <xqdoc-module show-health="[[showHealth]]" item="{{result.response}}"></xqdoc-module>
             <template is="dom-if" if="{{result.response.variables}}">
               <paper-card><h3>Variables</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.variables}}">
-                <variable-detail item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
+                <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
               </template>
             </template>
             <template is="dom-if" if="{{result.response.imports}}">
               <paper-card><h3>Imports</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.imports}}">
-                <import-detail item="{{item}}"></import-detail>
+                <import-detail show-health="[[showHealth]]" item="{{item}}"></import-detail>
               </template>
             </template>
             <template is="dom-if" if="{{result.response.functions}}">
               <paper-card><h3>Functions</h3></paper-card>
               <template is="dom-repeat" items="{{result.response.functions}}">
-                <function-detail item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
+                <function-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
               </template>
             </template>
           </template>
@@ -129,6 +131,7 @@ class XqdocApp extends PolymerElement {
       result: { type: Object, notify: true },
       params: { type: Object, notify: true },
       hash: { type: String, notify: true },
+      showHealth: { type: Boolean, notify: true, value: false },
       selectedSuggestionId: { type: String, notify: true, observer: '_moduleSelected' }
     };
   }
