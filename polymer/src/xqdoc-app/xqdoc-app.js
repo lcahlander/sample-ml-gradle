@@ -101,35 +101,14 @@ class XqdocApp extends PolymerElement {
         <section>
           <template is="dom-if" if="{{result.response.uri}}">
             <xqdoc-module show-health="[[showHealth]]" item="{{result.response}}"></xqdoc-module>
-            <template is="dom-if" if="{{result.response.variables}}">
-              <paper-card>
-                <paper-toolbar>
-                  <span slot="top" class="title">Variables</span>
-                </paper-toolbar>
-                <template is="dom-repeat" items="{{result.response.variables}}">
-                  <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
-                </template>
-              </paper-card>
+            <template is="dom-repeat" items="{{result.response.imports}}">
+              <import-detail item="{{item}}"></import-detail>
             </template>
-            <template is="dom-if" if="{{result.response.imports}}">
-              <paper-card>
-                <paper-toolbar>
-                  <span slot="top" class="title">Imports</span>
-                </paper-toolbar>
-                <template is="dom-repeat" items="{{result.response.imports}}">
-                  <import-detail item="{{item}}"></import-detail>
-                </template>
-              </paper-card>
+            <template is="dom-repeat" items="{{result.response.variables}}">
+              <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
             </template>
-            <template is="dom-if" if="{{result.response.functions}}">
-              <paper-card>
-                <paper-toolbar>
-                  <span slot="top" class="title">Functions</span>
-                </paper-toolbar>
-              </paper-card>
-              <template is="dom-repeat" items="{{result.response.functions}}">
-                <function-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
-              </template>
+            <template is="dom-repeat" items="{{result.response.functions}}">
+              <function-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
             </template>
           </template>
           <paper-card>Created by xqDoc version [[result.response.control.version]] on [[result.response.control.date]]</paper-card>

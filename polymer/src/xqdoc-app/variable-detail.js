@@ -14,12 +14,16 @@ import './hash-button.js';
 class VariableDetail extends PolymerElement {
   static get template() {
     return html`
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
         }
+      paper-toolbar {
+        --paper-toolbar-background: grey;
+      }
       paper-card {
         width: 100%;
+        margin-bottom: 5px;
       }
       expanded-card {
         padding-top: 1px;
@@ -31,12 +35,11 @@ class VariableDetail extends PolymerElement {
       .card-content {
         padding-top: 5px;
         padding-bottom: 5px;
-        font-size: 10px;
       }
     </style>
     <paper-card>
       <paper-toolbar>
-        <span slot="top" class="title">$[[item.name]]</span>
+        <span slot="top" class="title">Variable: $[[item.name]]</span>
         <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
       </paper-toolbar>
       <div class="card-content">

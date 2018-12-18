@@ -1,5 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-card/paper-card.js';
+import '@polymer/paper-toolbar/paper-toolbar.js';
 import './xqdoc-comment.js';
 
 /**
@@ -9,24 +10,31 @@ import './xqdoc-comment.js';
 class ImportDetail extends PolymerElement {
   static get template() {
     return html`
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
         }
       paper-card {
         width: 100%;
+        margin-bottom: 5px;
+      }
+      paper-toolbar {
+        --paper-toolbar-background: grey;
       }
       .card-content {
         padding-top: 5px;
         padding-bottom: 5px;
-        font-size: 10px;
       }
     </style>
       <paper-card>
-        <div class="card-content">
-          <div>[[item.uri]]</div>
-          <xqdoc-comment show-detail comment="[[item.comment]]"></xqdoc-comment>
-        </div>
+        <paper-toolbar>
+          <span slot="top" class="title">Import: [[item.uri]]</span>
+        </paper-toolbar>
+        <template is="dom-if" if="{{item.comment}}">
+          <div class="card-content">
+            <xqdoc-comment show-detail comment="[[item.comment]]"></xqdoc-comment>
+          </div>
+        </template>
       </paper-card>
     `;
   }

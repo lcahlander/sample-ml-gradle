@@ -19,10 +19,10 @@ import './hash-button.js';
 class FunctionDetail extends GestureEventListeners(PolymerElement) {
   static get template() {
     return html`
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
-        }
+      }
       paper-card {
         width: 100%;
         margin-bottom: 5px;
@@ -31,15 +31,16 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         background-color: #fafafa;
         border-radius: 3px;
         padding: 5px;
-        font-size: 16px;
       }
       .card-content {
         padding-top: 5px;
         padding-bottom: 5px;
-        font-size: 10px;
       }
       paper-button.label {
         padding: 1px;
+      }
+      paper-toolbar {
+        --paper-toolbar-background: grey;
       }
       expanded-card {
         padding-top: 1px;
@@ -51,13 +52,10 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       code-highlighter {
         overflow: scroll;
       }
-      ul.cptInstanceMetadata {
-        list-style: none;
-      }
     </style>
     <paper-card>
       <paper-toolbar>
-        <span slot="top" class="title">[[item.name]]</span>
+        <span slot="top" class="title">Function: [[item.name]]</span>
         <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
         <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
       </paper-toolbar>
