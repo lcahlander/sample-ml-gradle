@@ -34,34 +34,34 @@ class VariableDetail extends PolymerElement {
         font-size: 10px;
       }
     </style>
-      <paper-card>
-        <div class="card-content">
-          <paper-toolbar>
-            <span slot="top" class="title">$[[item.name]]</span>
-            <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
-          </paper-toolbar>
-          <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
-          <iron-collapse id="detailCollapse" opened="{{showDetail}}">
-            <div class="conceptcard">
-          <h4>Functions that reference this Variable</h4>
-          <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.references]]"  height-by-rows>
-            <vaadin-grid-column>
-              <template class="header">Module URI</template>
-              <template>[[item.uri]]</template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-              <template class="header">Function Names</template>
-              <template>
-                <template is="dom-repeat" items="{{item.functions}}">
-                  <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+    <paper-card>
+      <paper-toolbar>
+        <span slot="top" class="title">$[[item.name]]</span>
+        <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
+      </paper-toolbar>
+      <div class="card-content">
+        <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
+        <iron-collapse id="detailCollapse" opened="{{showDetail}}">
+          <div class="conceptcard">
+            <h4>Functions that reference this Variable</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.references]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Function Names</template>
+                <template>
+                  <template is="dom-repeat" items="{{item.functions}}">
+                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                  </template>
                 </template>
-              </template>
-            </vaadin-grid-column>
-          </vaadin-grid>
-            </div>
-          </iron-collapse>
-        </div>
-      </paper-card>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </div>
+        </iron-collapse>
+      </div>
+    </paper-card>
     `;
   }
   static get properties() {

@@ -23,20 +23,6 @@ class XQDocModule extends PolymerElement {
       paper-card {
         width: 100%;
       }
-      .conceptcard {
-        background-color: #fafafa;
-        border-radius: 3px;
-        padding: 5px;
-        font-size: 16px;
-      }
-      .card-content {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        font-size: 10px;
-      }
-      paper-button.label {
-        padding: 1px;
-      }
       expanded-card {
         padding-top: 1px;
         padding-bottom: 1px;
@@ -44,25 +30,27 @@ class XQDocModule extends PolymerElement {
       paper-toggle-button {
         margin-right: 10px;
       }
-      ul.cptInstanceMetadata {
-        list-style: none;
+      .card-content {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 10px;
       }
     </style>
-      <paper-card>
-        <div class="card-content">
-          <paper-toolbar>
-            <span slot="top" class="title">[[item.uri]]</span>
-            <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
-            <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
-          </paper-toolbar>
-          <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
-        </div>
+    <paper-card>
+      <paper-toolbar>
+        <span slot="top" class="title">[[item.uri]]</span>
+        <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
+        <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
+      </paper-toolbar>
+      <div class="card-content">
+        <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
         <iron-collapse id="contentCollapse" opened="{{showCode}}">
           <div class="conceptcard">
             <code-highlighter>[[item.body]]</code-highlighter>
           </div>
         </iron-collapse>
-      </paper-card>
+      </div>
+    </paper-card>
     `;
   }
   static get properties() {

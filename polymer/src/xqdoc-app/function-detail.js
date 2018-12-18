@@ -55,95 +55,95 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
         list-style: none;
       }
     </style>
-      <paper-card>
-        <div class="card-content">
-          <paper-toolbar>
-            <span slot="top" class="title">[[item.name]]</span>
-            <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
-            <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
-          </paper-toolbar>
-          <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
-          <h2>Signature</h2>
-          <code-highlighter>[[item.signature]]</code-highlighter>
-          <iron-collapse id="detailCollapse" opened="{{showDetail}}">
-            <div class="conceptcard">
-          <template is="dom-if" if="{{_showAnnotations(item)}}">
-            <h4>Annotations</h4>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.annotations]]"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Name</template>
-                <template>[[item.name]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Literals</template>
-                <template>
-                  <template is="dom-repeat" items="{{item.literals}}">
-                    <paper-button class="label" noink>[[item]]</paper-button>
+    <paper-card>
+      <paper-toolbar>
+        <span slot="top" class="title">[[item.name]]</span>
+        <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
+        <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
+      </paper-toolbar>
+      <div class="card-content">
+        <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
+        <h2>Signature</h2>
+        <code-highlighter>[[item.signature]]</code-highlighter>
+        <iron-collapse id="detailCollapse" opened="{{showDetail}}">
+          <div class="conceptcard">
+            <template is="dom-if" if="{{_showAnnotations(item)}}">
+              <h4>Annotations</h4>
+              <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.annotations]]"  height-by-rows>
+                <vaadin-grid-column>
+                  <template class="header">Name</template>
+                  <template>[[item.name]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                  <template class="header">Literals</template>
+                  <template>
+                    <template is="dom-repeat" items="{{item.literals}}">
+                      <paper-button class="label" noink>[[item]]</paper-button>
+                    </template>
                   </template>
-                </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-          <template is="dom-if" if="{{_showInvoked(item)}}">
-            <h4>Functions that are invoked in this function</h4>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Module URI</template>
-                <template>[[item.uri]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Function Names</template>
-                <template>
-                  <template is="dom-repeat" items="{{item.functions}}">
-                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                </vaadin-grid-column>
+              </vaadin-grid>
+            </template>
+            <template is="dom-if" if="{{_showInvoked(item)}}">
+              <h4>Functions that are invoked in this function</h4>
+              <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
+                <vaadin-grid-column>
+                  <template class="header">Module URI</template>
+                  <template>[[item.uri]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                  <template class="header">Function Names</template>
+                  <template>
+                    <template is="dom-repeat" items="{{item.functions}}">
+                      <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                    </template>
                   </template>
-                </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-          <template is="dom-if" if="{{_showRefVariables(item)}}">
-            <h4>Variables that are referred to in this function</h4>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.refVariables]]"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Module URI</template>
-                <template>[[item.uri]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Variable Names</template>
-                <template>
-                  <template is="dom-repeat" items="{{item.variables}}">
-                    <paper-button class="label" noink>$[[item.name]]</paper-button>
+                </vaadin-grid-column>
+              </vaadin-grid>
+            </template>
+            <template is="dom-if" if="{{_showRefVariables(item)}}">
+              <h4>Variables that are referred to in this function</h4>
+              <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.refVariables]]"  height-by-rows>
+                <vaadin-grid-column>
+                  <template class="header">Module URI</template>
+                  <template>[[item.uri]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                  <template class="header">Variable Names</template>
+                  <template>
+                    <template is="dom-repeat" items="{{item.variables}}">
+                      <paper-button class="label" noink>$[[item.name]]</paper-button>
+                    </template>
                   </template>
-                </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-          <template is="dom-if" if="{{_showReferences(item)}}">
-            <h4>Functions that invoke this function</h4>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.references]]"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Module URI</template>
-                <template>[[item.uri]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Function Names</template>
-                <template>
-                  <template is="dom-repeat" items="{{item.functions}}">
-                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                </vaadin-grid-column>
+              </vaadin-grid>
+            </template>
+            <template is="dom-if" if="{{_showReferences(item)}}">
+              <h4>Functions that invoke this function</h4>
+              <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.references]]"  height-by-rows>
+                <vaadin-grid-column>
+                  <template class="header">Module URI</template>
+                  <template>[[item.uri]]</template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                  <template class="header">Function Names</template>
+                  <template>
+                    <template is="dom-repeat" items="{{item.functions}}">
+                      <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                    </template>
                   </template>
-                </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-            </div>
-          </iron-collapse>
-          <iron-collapse id="codeCollapse" opened="{{showCode}}">
-            <div class="conceptcard">
-              <code-highlighter>[[item.body]]</code-highlighter>
-            </div>
-          </iron-collapse>
-        </div>
-      </paper-card>
+                </vaadin-grid-column>
+              </vaadin-grid>
+            </template>
+          </div>
+        </iron-collapse>
+        <iron-collapse id="codeCollapse" opened="{{showCode}}">
+          <div class="conceptcard">
+            <code-highlighter>[[item.body]]</code-highlighter>
+          </div>
+        </iron-collapse>
+      </div>
+    </paper-card>
     `;
   }
   static get properties() {
