@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.xqdoc:xqdoc:1.9.5"
+        classpath "org.xqdoc:xqdoc:1.9.6"
     }
 }
 
@@ -46,6 +46,7 @@ task generateXQDocs(type: Copy) {
   include '**/*.xqy'
   rename { it - '.xqy' + '.xml' } 
   includeEmptyDirs = false
+  eachFile { println it }
   filter XQDocFilter
 }
 
