@@ -14,6 +14,7 @@ import '@polymer/iron-ajax/iron-ajax.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-item/paper-item.js';
 import '@polymer/paper-card/paper-card.js';
+import '@polymer/paper-toolbar/paper-toolbar.js';
 import '@polymer/paper-listbox/paper-listbox.js';
 import '@polymer/iron-location/iron-location.js';
 import '@polymer/iron-location/iron-query-params.js';
@@ -101,19 +102,31 @@ class XqdocApp extends PolymerElement {
           <template is="dom-if" if="{{result.response.uri}}">
             <xqdoc-module show-health="[[showHealth]]" item="{{result.response}}"></xqdoc-module>
             <template is="dom-if" if="{{result.response.variables}}">
-              <paper-card><h3>Variables</h3></paper-card>
-              <template is="dom-repeat" items="{{result.response.variables}}">
-                <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
-              </template>
+              <paper-card>
+                <paper-toolbar>
+                  <span slot="top" class="title">Variables</span>
+                </paper-toolbar>
+                <template is="dom-repeat" items="{{result.response.variables}}">
+                  <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
+                </template>
+              </paper-card>
             </template>
             <template is="dom-if" if="{{result.response.imports}}">
-              <paper-card><h3>Imports</h3></paper-card>
-              <template is="dom-repeat" items="{{result.response.imports}}">
-                <import-detail show-health="[[showHealth]]" item="{{item}}"></import-detail>
-              </template>
+              <paper-card>
+                <paper-toolbar>
+                  <span slot="top" class="title">Imports</span>
+                </paper-toolbar>
+                <template is="dom-repeat" items="{{result.response.imports}}">
+                  <import-detail show-health="[[showHealth]]" item="{{item}}"></import-detail>
+                </template>
+              </paper-card>
             </template>
             <template is="dom-if" if="{{result.response.functions}}">
-              <paper-card><h3>Functions</h3></paper-card>
+              <paper-card>
+                <paper-toolbar>
+                  <span slot="top" class="title">Functions</span>
+                </paper-toolbar>
+              </paper-card>
               <template is="dom-repeat" items="{{result.response.functions}}">
                 <function-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
               </template>

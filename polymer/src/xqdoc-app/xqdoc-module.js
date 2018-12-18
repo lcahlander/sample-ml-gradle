@@ -3,7 +3,9 @@ import '@polymer/paper-card/paper-card.js';
 import 'polymer-code-highlighter/code-highlighter.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/paper-toggle-button/paper-toggle-button.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/paper-toolbar/paper-toolbar.js';
 import '@polymer/paper-button/paper-button.js';
 import './xqdoc-comment.js';
 
@@ -39,19 +41,23 @@ class XQDocModule extends PolymerElement {
         padding-top: 1px;
         padding-bottom: 1px;
       }
+      paper-toggle-button {
+        margin-right: 10px;
+      }
       ul.cptInstanceMetadata {
         list-style: none;
       }
     </style>
-      <paper-card><h3>Module</h3></paper-card>
       <paper-card>
         <div class="card-content">
-          <h2>[[item.uri]]</h2>
-          <xqdoc-comment show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
+          <paper-toolbar>
+            <span slot="top" class="title">[[item.uri]]</span>
+            <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
+            <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
+          </paper-toolbar>
+          <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
         </div>
-        <paper-icon-button on-tap="toggleExpand" class="self-end" id="expandButton"></paper-icon-button>
-        <paper-button on-tap="toggleExpand" id="expandText">Show details</paper-button>
-        <iron-collapse id="contentCollapse" opened="{{expanded}}">
+        <iron-collapse id="contentCollapse" opened="{{showCode}}">
           <div class="conceptcard">
             <code-highlighter>[[item.body]]</code-highlighter>
           </div>
@@ -61,50 +67,20 @@ class XQDocModule extends PolymerElement {
   }
   static get properties() {
     return {
-      expanded: {
+      showCode: {
         type: Boolean,
         value: false,
-        notify: true,
-        observer: '_expandedChanged'
+        notify: true
+      },
+      showDetail: {
+        type: Boolean,
+        value: false,
+        notify: true
       },
       showHealth: { type: Boolean, notify: true },
       item: { type: Object, notify: true }
     };
   }
-
-    // Fires when the local DOM has been fully prepared
-    ready() {
-      super.ready();
-    //Set initial icon
-      if(this.expanded) {
-        this.$.expandButton.icon = "icons:expand-less";
-        this.$.expandText.innerHTML = "Hide details";
-      }
-      else {
-        this.$.expandButton.icon = "icons:expand-more";
-        this.$.expandText.innerHTML = "Show details";
-      }
-    }
-    // Fires when an attribute was added, removed, or updated
-    _expandedChanged(newVal, oldVal) {
-    
-      //If icon is already set no need to animate!
-      if((newVal && (this.$.expandButton.icon == "icons:expand-less")) || (!newVal && (this.$.expandButton.icon == "icons:expand-more"))) {
-        return;
-      }
-      
-      if(this.expanded) {
-        this.$.expandButton.icon = "icons:expand-less";
-        this.$.expandText.innerHTML = "Hide details";
-      } else {
-        this.$.expandButton.icon = "icons:expand-more";
-        this.$.expandText.innerHTML = "Show details";
-      }
-    }
-    toggleExpand(e) {
-      this.expanded = !this.expanded;
-    }
-
 }
 
 window.customElements.define('xqdoc-module', XQDocModule);
