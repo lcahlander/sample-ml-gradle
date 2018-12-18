@@ -117,7 +117,7 @@ class XqdocApp extends PolymerElement {
                   <span slot="top" class="title">Imports</span>
                 </paper-toolbar>
                 <template is="dom-repeat" items="{{result.response.imports}}">
-                  <import-detail show-health="[[showHealth]]" item="{{item}}"></import-detail>
+                  <import-detail item="{{item}}"></import-detail>
                 </template>
               </paper-card>
             </template>

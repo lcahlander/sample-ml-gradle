@@ -21,59 +21,61 @@ class XQDocComment extends PolymerElement {
       </template>
     </template>
     <template is="dom-if" if="[[comment]]">
-    <markdown-element markdown="[[comment.description]]"></markdown-element>
-          <iron-collapse id="detailCollapse" opened="{{showDetail}}">
-            <div class="conceptcard">
-      <template is="dom-if" if="{{_showCommentDetails(comment)}}">
-        <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listDetail(comment)}}"  height-by-rows>
-          <vaadin-grid-column>
-            <template class="header">Type</template>
-            <template>[[item.name]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Comment</template>
-            <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
-          </vaadin-grid-column>
-        </vaadin-grid>
-      </template>
-      <template is="dom-if" if="{{_showParameters(parameters)}}">
-        <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listParameters(comment.params, parameters)}}"  height-by-rows>
-          <vaadin-grid-column>
-            <template class="header">Parameter</template>
-            <template>[[item.name]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Data Type</template>
-            <template>[[item.type]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Occurrence</template>
-            <template>[[item.occurrence]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Comment</template>
-            <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
-          </vaadin-grid-column>
-        </vaadin-grid>
-      </template>
-      <template is="dom-if" if="{{_showReturn(comment.return, return)}}">
-        <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(comment.return, return)}}"  height-by-rows>
-          <vaadin-grid-column>
-            <template class="header">Data Type</template>
-            <template>[[item.type]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Occurrence</template>
-            <template>[[item.occurrence]]</template>
-          </vaadin-grid-column>
-          <vaadin-grid-column>
-            <template class="header">Comment</template>
-            <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
-          </vaadin-grid-column>
-        </vaadin-grid>
-      </template>
-            </div>
-          </iron-collapse>
+      <markdown-element markdown="[[comment.description]]"></markdown-element>
+      <iron-collapse id="detailCollapse" opened="{{showDetail}}">
+        <div class="conceptcard">
+          <template is="dom-if" if="{{_showCommentDetails(comment)}}">
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listDetail(comment)}}"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Type</template>
+                <template>[[item.name]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Comment</template>
+                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
+          <template is="dom-if" if="{{_showParameters(parameters)}}">
+            <h2>Parameters</h2>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listParameters(comment.params, parameters)}}"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Parameter</template>
+                <template>[[item.name]]</template>
+                </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Data Type</template>
+                <template>[[item.type]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Occurrence</template>
+                <template>[[item.occurrence]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Comment</template>
+                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
+          <template is="dom-if" if="{{_showReturn(comment.return, return)}}">
+            <h2>Return</h2>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(comment.return, return)}}"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Data Type</template>
+                <template>[[item.type]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Occurrence</template>
+                <template>[[item.occurrence]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Comment</template>
+                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
+        </div>
+      </iron-collapse>
     </template>
     `;
   }

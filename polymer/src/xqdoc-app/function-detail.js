@@ -63,6 +63,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
             <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
           </paper-toolbar>
           <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
+          <h2>Signature</h2>
           <code-highlighter>[[item.signature]]</code-highlighter>
           <iron-collapse id="detailCollapse" opened="{{showDetail}}">
             <div class="conceptcard">
