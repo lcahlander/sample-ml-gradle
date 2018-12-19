@@ -100,7 +100,7 @@ class XqdocApp extends PolymerElement {
           <paper-toast id="toast"></paper-toast>
           <div>
           <template is="dom-if" if="{{result.response.uri}}">
-            <xqdoc-module show-health="[[showHealth]]" item="{{result.response}}"></xqdoc-module>
+            <xqdoc-module show-health="[[showHealth]]" item="{{result.response}}" params="{{params}}" hash="{{hash}}"></xqdoc-module>
             <template is="dom-repeat" items="{{result.response.imports}}">
               <import-detail item="{{item}}"></import-detail>
             </template>

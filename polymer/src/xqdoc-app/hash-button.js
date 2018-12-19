@@ -28,10 +28,20 @@ class HashButton extends PolymerElement {
   }
 
   selectLink() {
-    this.hash = 'function-' + this.name;
     if (this.params.module != this.uri) {
-      this.params.module = this.uri;
+      this.set('params', { 'rs:module': this.uri});
+      this.notifyPath('params');
+      setTimeout(
+        () => this._setHash('function-' + this.name),
+        2500
+      );
+    } else {
+      this.hash = 'function-' + this.name;
     }
+  }
+
+  _setHash(newHash) {
+    this.set('hash', newHash);
   }
 
 }

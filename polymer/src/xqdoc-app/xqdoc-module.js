@@ -8,6 +8,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/paper-toolbar/paper-toolbar.js';
 import '@polymer/paper-button/paper-button.js';
 import './xqdoc-comment.js';
+import './hash-button.js';
 
 /**
  * @customElement
@@ -46,7 +47,41 @@ class XQDocModule extends PolymerElement {
         <paper-toggle-button slot="top" checked="{{showCode}}">Code</paper-toggle-button>
       </paper-toolbar>
       <div class="card-content">
-        <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
+      <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
+          <template is="dom-if" if="{{_showInvoked(item)}}">
+            <h4>Functions that are invoked in this function</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Function Names</template>
+                <template>
+                  <template is="dom-repeat" items="{{item.functions}}">
+                    <hash-button name="[[item.name]]" uri="[[item.uri]]" disabled="[[!item.isReachable]]" params="{{params}}" hash="{{hash}}"></hash-button>
+                  </template>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
+          <template is="dom-if" if="{{_showRefVariables(item)}}">
+            <h4>Variables that are referred to in this function</h4>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.refVariables]]"  height-by-rows>
+              <vaadin-grid-column>
+                <template class="header">Module URI</template>
+                <template>[[item.uri]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">Variable Names</template>
+                <template>
+                  <template is="dom-repeat" items="{{item.variables}}">
+                    <paper-button class="label" noink>$[[item.name]]</paper-button>
+                  </template>
+                </template>
+              </vaadin-grid-column>
+            </vaadin-grid>
+          </template>
         <iron-collapse id="contentCollapse" opened="{{showCode}}">
           <div class="conceptcard">
             <code-highlighter>[[item.body]]</code-highlighter>
@@ -68,10 +103,29 @@ class XQDocModule extends PolymerElement {
         value: false,
         notify: true
       },
+      params: { type: Object, notify: true },
       showHealth: { type: Boolean, notify: true },
+      hash: { type: String, notify: true },
       item: { type: Object, notify: true }
     };
   }
+
+    _showInvoked(item) {
+      if (item.invoked.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    _showRefVariables(item) {
+      if (item.refVariables.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
 }
 
 window.customElements.define('xqdoc-module', XQDocModule);
