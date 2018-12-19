@@ -108,7 +108,7 @@ class XqdocApp extends PolymerElement {
               <variable-detail show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></variable-detail>
             </template>
             <template is="dom-repeat" items="{{result.response.functions}}">
-              <function-detail id="[[item.name]]" show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
+              <function-detail id="function-[[item.name]]" show-health="[[showHealth]]" item="{{item}}" params="{{params}}" hash="{{hash}}"></function-detail>
             </template>
           </template>
           <paper-card>Created by xqDoc version [[result.response.control.version]] on [[result.response.control.date]]</paper-card>
@@ -128,8 +128,36 @@ class XqdocApp extends PolymerElement {
     };
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+
+    // If there is a hash, wait 2.5 seconds and then call _hashChanged to scroll to the hash.
+
+    var myHash = this.get('hash');
+
+    if (myHash) {
+      setTimeout(
+        () => this._hashChanged(myHash, ''),
+        2500
+      );
+    }
+  }
+
   _hashChanged(newValue, oldValue) {
-    var a= newValue;
+    var a= '#' + newValue;
+
+    /*
+        You cannot refer to the nodes inside template tags, because this.$ is filled 
+        at the component initialization time and those templates are not yet stamped.
+
+        The workaround is to use the below function.
+    */
+    var b = this.shadowRoot.querySelector(a);
+
+    if (b) {
+      b.scrollIntoView();
+    }
+    console.log('scrolled to ' + a);
   }
 
   _moduleSelected(newValue, oldValue) {
