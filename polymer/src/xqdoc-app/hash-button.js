@@ -28,7 +28,9 @@ class HashButton extends PolymerElement {
   }
 
   selectLink() {
-    if (this.params.module != this.uri) {
+    var p = this.get('params');
+    var m = p['rs:module'];
+    if (m != this.uri) {
       this.set('params', { 'rs:module': this.uri});
       this.notifyPath('params');
       setTimeout(

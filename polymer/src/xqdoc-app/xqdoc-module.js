@@ -48,6 +48,8 @@ class XQDocModule extends PolymerElement {
       </paper-toolbar>
       <div class="card-content">
       <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]"></xqdoc-comment>
+        <iron-collapse id="detailCollapse" opened="{{showDetail}}">
+          <div class="conceptcard">
           <template is="dom-if" if="{{_showInvoked(item)}}">
             <h4>Functions that are invoked in this function</h4>
             <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="[[item.invoked]]"  height-by-rows>
@@ -82,6 +84,8 @@ class XQDocModule extends PolymerElement {
               </vaadin-grid-column>
             </vaadin-grid>
           </template>
+          </div>
+        </iron-collapse>
         <iron-collapse id="contentCollapse" opened="{{showCode}}">
           <div class="conceptcard">
             <code-highlighter>[[item.body]]</code-highlighter>
