@@ -75,7 +75,7 @@ class XqdocApp extends PolymerElement {
           <app-toolbar>
             <div main-title>Modules</div>
           </app-toolbar>
-        <section>
+        <section style="height: 100%; overflow: auto;">
         <paper-listbox attr-for-selected="item-name" selected="{{selectedSuggestionId}}" fallback-selection="None">
           <h3>Libraries</h3>
           <template is="dom-repeat" items="[[result.modules.libraries]]">
