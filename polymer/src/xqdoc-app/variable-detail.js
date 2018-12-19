@@ -41,6 +41,7 @@ class VariableDetail extends PolymerElement {
       <paper-toolbar>
         <span slot="top" class="title">Variable: $[[item.name]]</span>
         <paper-toggle-button slot="top" checked="{{showDetail}}">Detail</paper-toggle-button>
+        <paper-toggle-button slot="top" disabled>Code</paper-toggle-button>
       </paper-toolbar>
       <div class="card-content">
         <xqdoc-comment show-detail="[[showDetail]]" show-health="[[showHealth]]" comment="[[item.comment]]" parameters="[[item.parameters]]" return="[[item.return]]"></xqdoc-comment>
