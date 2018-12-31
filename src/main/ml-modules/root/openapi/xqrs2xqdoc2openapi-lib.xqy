@@ -12,7 +12,7 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
 (:~
  :)
-declare variable $xqrs2openapi:service-names := ("xqrs:GET", "xqrs:HEAD", "xqrs:PUT", "xqrs:POST", "xqrs:DELETE", "xqrs:OPTIONS", "xqrs:PATCH");
+declare variable $xqrs2openapi:service-names := ("rest:GET", "rest:HEAD", "rest:PUT", "rest:POST", "rest:DELETE", "rest:OPTIONS", "rest:PATCH");
 
 
 (:~
@@ -36,7 +36,7 @@ as xs:string
     then replace(fn:substring-after($param, $param-name),'^\s+','')
     else ""
 };
-
+ 
 (:~
  :)
 declare function xqrs2openapi:schema-object($type as node())
@@ -82,12 +82,19 @@ as map:map?
             return if (fn:contains($token, "=")) then fn:substring-before($token, "=") else $token
 
     let $responses-object := map:map()
-    let $_ := (
+    let $content-object := map:map()
+    let $_ := if ($function//xqdoc:annotation[fn:starts-with(@name, "rest:produces")]) then (
         for $producer in $function//xqdoc:annotation[fn:starts-with(@name, "rest:produces")]
         return 
             for $literal in $producer/xqdoc:literal
-            return map:put($responses-object, xs:string($literal), map:map())
-    )
+            let $produces-opject := map:map()
+            let $schema-object := map:map()
+            let $schema-put := map:put($schema-object, "type", "object")
+            let $produces-put := map:put($produces-opject, "schema", $schema-object)
+            return map:put($content-object, xs:string($literal), $produces-opject),
+        map:put($responses-object, "content", $content-object)
+    ) else ()
+
 
     let $parameters-array := json:array()
     let $_ := (

@@ -144,20 +144,22 @@ class XqdocApp extends PolymerElement {
   }
 
   _hashChanged(newValue, oldValue) {
-    var a= '#' + newValue;
+    if (newValue != "") {
+      var a= '#' + newValue;
 
-    /*
-        You cannot refer to the nodes inside template tags, because this.$ is filled 
-        at the component initialization time and those templates are not yet stamped.
+      /*
+          You cannot refer to the nodes inside template tags, because this.$ is filled 
+          at the component initialization time and those templates are not yet stamped.
 
-        The workaround is to use the below function.
-    */
-    var b = this.shadowRoot.querySelector(a);
+          The workaround is to use the below function.
+      */
+      var b = this.shadowRoot.querySelector(a);
 
-    if (b) {
-      b.scrollIntoView();
+      if (b) {
+        b.scrollIntoView();
+      }
+      console.log('scrolled to ' + a);
     }
-    console.log('scrolled to ' + a);
   }
 
   _moduleSelected(newValue, oldValue) {

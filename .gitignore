@@ -10,3 +10,7 @@
 /src/main/ml-modules/root/xqDoc2/index.html
 /src/main/ml-modules/root/xqDoc2/node_modules
 /src/main/ml-modules/root/xqDoc2/src
+/polymer/xqDoc/services/node_modules
+/polymer/xqDoc/xqrs/node_modules
+/polymer/xqDoc/services/package-lock.json
+/polymer/xqDoc/xqrs/package-lock.json
