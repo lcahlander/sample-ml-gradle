@@ -168,6 +168,6 @@ let $paths :=
             then map:put($path-object, fn:lower-case(fn:substring-after($service-name, ":")), $service-object)
             else ()
     )
-    return map:put($paths-object, $path, $path-object)
+    return map:put($paths-object, fn:replace($path, "\{\$", "{"), $path-object)
 return $paths-object
 };
