@@ -52,6 +52,37 @@ declare function xq:comment($comment as node()?) {
 };
 
 (:~
+Generate the occurrence string for the xqDoc display
+
+&lt;table border="1" style="border-collapse: collapse;"&gt;
+&lt;tr&gt;
+&lt;th&gt;Occurrence&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;?&lt;/td&gt;&lt;td&gt;zero or one&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;/td&gt;&lt;td&gt;one or more&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;*&lt;/td&gt;&lt;td&gt;zero or more&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;exactly one&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+@param $type the data type xqDoc element.
+@return The description of the occurrence
+ :)
+declare function xq:occurrence($type as node()?) 
+as xs:string
+{
+  switch ($type/@occurrence)
+    case "+" return
+      "one or more"
+    case "*" return
+      "zero or more"
+    case "?" return
+      "zero or one"
+    default return
+      "exactly one"
+};
+
+(:~
   Generates the JSON for the xqDoc functions
   @param $functions
   @param $module-uri The URI of the selected module
@@ -84,24 +115,33 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
         },
       "parameters" : array-node {
                         for $parameter in $function/xqdoc:parameters/xqdoc:parameter
+                        let $ptest := '$' || $parameter/xqdoc:name/text()
+                        let $param := $function//xqdoc:param[fn:starts-with(., $ptest)]
+                        let $pbody := fn:substring($param/text(), fn:string-length($ptest) + 1)
+                        let $description := replace($pbody,'^\s+','')
                         return 
                           object-node {
                             "name" : fn:string-join($parameter/xqdoc:name/text(), " "),
                             "type" : fn:string-join($parameter/xqdoc:type/text(), " "),
-                            "occurrence" : 
-                              if ($parameter/xqdoc:type/@occurrence) 
-                              then xs:string($parameter/xqdoc:type/@occurrence) 
-                              else fn:false()
+                            "occurrence" : xq:occurrence($parameter/xqdoc:type),
+                            "description" : $description
                           }
                      },
      "return" : if ($function/xqdoc:return) 
                 then 
                   object-node {
-                      "type" : fn:string-join($function/xqdoc:return/xqdoc:type/text(), " "),
+                      "type" : 
+                          if (fn:string-length(xs:string($function/xqdoc:return/xqdoc:type)) gt 0)
+                          then fn:string-join($function/xqdoc:return/xqdoc:type/text(), " ")
+                          else "empty-sequence()",
                       "occurrence" : 
-                        if ($function/xqdoc:return/xqdoc:type/@occurrence) 
-                        then xs:string($function/xqdoc:return/xqdoc:type/@occurrence) 
-                        else fn:false()
+                          if (fn:string-length(xs:string($function/xqdoc:return/xqdoc:type)) gt 0)
+                          then xq:occurrence($function/xqdoc:return/xqdoc:type)
+                          else "",
+                      "description" : 
+                          if ($function/xqdoc:comment/xqdoc:return)
+                          then xs:string($function/xqdoc:comment/xqdoc:return)
+                          else ""
                   } 
                 else fn:false(),
       "invoked" : 

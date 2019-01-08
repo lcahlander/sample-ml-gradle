@@ -38,6 +38,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
       }
       paper-button.label {
         padding: 1px;
+        margin-left: 2px;
       }
       paper-toolbar {
         --paper-toolbar-background: grey;
@@ -72,7 +73,7 @@ class FunctionDetail extends GestureEventListeners(PolymerElement) {
                   <template class="header">Name</template>
                   <template>[[item.name]]</template>
                 </vaadin-grid-column>
-                <vaadin-grid-column>
+                <vaadin-grid-column text-align="start">
                   <template class="header">Literals</template>
                   <template>
                     <template is="dom-repeat" items="{{item.literals}}">

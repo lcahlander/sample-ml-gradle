@@ -53,6 +53,37 @@ declare function xq:comment($comment as node()?) {
 };
 
 (:~
+Generate the occurrence string for the xqDoc display
+
+&lt;table border="1" style="border-collapse: collapse;"&gt;
+&lt;tr&gt;
+&lt;th&gt;Occurrence&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;?&lt;/td&gt;&lt;td&gt;zero or one&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;/td&gt;&lt;td&gt;one or more&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;*&lt;/td&gt;&lt;td&gt;zero or more&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;exactly one&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+@param $type the data type xqDoc element.
+@return The description of the occurrence
+ :)
+declare function xq:occurrence($type as node()?) 
+as xs:string
+{
+  switch ($type/@occurrence)
+    case "+" return
+      "one or more"
+    case "*" return
+      "zero or more"
+    case "?" return
+      "zero or one"
+    default return
+      "exactly one"
+};
+
+(:~
   Generates the JSON for the xqDoc functions
   @param $functions
   @param $module-uri The URI of the selected module
@@ -85,24 +116,33 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
         },
       "parameters" : array-node {
                         for $parameter in $function/xqdoc:parameters/xqdoc:parameter
+                        let $ptest := '$' || $parameter/xqdoc:name/text()
+                        let $param := $function//xqdoc:param[fn:starts-with(., $ptest)]
+                        let $pbody := fn:substring($param/text(), fn:string-length($ptest) + 1)
+                        let $description := replace($pbody,'^\s+','')
                         return 
                           object-node {
                             "name" : fn:string-join($parameter/xqdoc:name/text(), " "),
                             "type" : fn:string-join($parameter/xqdoc:type/text(), " "),
-                            "occurrence" : 
-                              if ($parameter/xqdoc:type/@occurrence) 
-                              then xs:string($parameter/xqdoc:type/@occurrence) 
-                              else fn:false()
+                            "occurrence" : xq:occurrence($parameter/xqdoc:type),
+                            "description" : $description
                           }
                      },
      "return" : if ($function/xqdoc:return) 
                 then 
                   object-node {
-                      "type" : fn:string-join($function/xqdoc:return/xqdoc:type/text(), " "),
+                      "type" : 
+                          if (fn:string-length(xs:string($function/xqdoc:return/xqdoc:type)) gt 0)
+                          then fn:string-join($function/xqdoc:return/xqdoc:type/text(), " ")
+                          else "empty-sequence()",
                       "occurrence" : 
-                        if ($function/xqdoc:return/xqdoc:type/@occurrence) 
-                        then xs:string($function/xqdoc:return/xqdoc:type/@occurrence) 
-                        else fn:false()
+                          if (fn:string-length(xs:string($function/xqdoc:return/xqdoc:type)) gt 0)
+                          then xq:occurrence($function/xqdoc:return/xqdoc:type)
+                          else "",
+                      "description" : 
+                          if ($function/xqdoc:comment/xqdoc:return)
+                          then xs:string($function/xqdoc:comment/xqdoc:return)
+                          else ""
                   } 
                 else fn:false(),
       "invoked" : 
@@ -343,49 +383,25 @@ declare function xq:imports($imports as node()*) {
 
 (:~
   Gets the xqDoc of a module as JSON
-  @param $context An object containing service request context information
-  @param $params  An object containing extension-specific parameter values supplied by the client
+  @param $module The URI of the module to display
   @author Loren Cahlander
   @version 1.0
   @since 1.0
-  @custom:openapi
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/xml": {
-                "schema": {
-                  "example": "<status>online</status>"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "GET_xqdoc",
-        "parameters": [
-          {
-            "name": "module",
-            "in": "query",
-            "description": "Get the xqDoc module based on the URI of the module.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
  :)
 declare 
+  %rest:GET
   %rest:path("/get-xqdoc")
-  %rest:query-param-1('module', '{$moduleURI}')
+  %rest:query-param-1('module', '{$module}')
   %rest:produces("application/json")
 function xq:get(
-  $moduleURI as xs:string?
+  $module as xs:string?
   ) 
 {
   let $_ := xdmp:log("GET called")
 
   let $doc := (
-          fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $moduleURI], 
-          fn:doc($moduleURI)/xqdoc:xqdoc
+          fn:collection($xq:XQDOC_COLLECTION)/xqdoc:xqdoc[xqdoc:module/xqdoc:uri = $module], 
+          fn:doc($module)/xqdoc:xqdoc
           )[1]
   let $module-comment := $doc/xqdoc:module/xqdoc:comment
   return 
@@ -398,7 +414,7 @@ function xq:get(
               return
                 object-node {
                   "uri" : $uri,
-                  "selected" : if ($uri = $moduleURI) then fn:true() else fn:false()
+                  "selected" : if ($uri = $module) then fn:true() else fn:false()
                 }
             },
             "main" : array-node {
@@ -408,7 +424,7 @@ function xq:get(
               return
                 object-node {
                   "uri" : $uri,
-                  "selected" : if ($uri = $moduleURI) then fn:true() else fn:false()
+                  "selected" : if ($uri = $module) then fn:true() else fn:false()
                 }
             }
           },
@@ -418,18 +434,18 @@ function xq:get(
                         "version" : $doc/xqdoc:control/xqdoc:version/text()
                       },
           "comment" : xq:comment($module-comment),
-          "uri": $moduleURI,
+          "uri": $module,
           "name" : 
             if ($doc/xqdoc:module/xqdoc:name) 
             then $doc/xqdoc:module/xqdoc:name/text() 
             else fn:false(),
           "invoked" : 
             array-node { 
-              xq:invoked($doc/xqdoc:module/xqdoc:invoked, $moduleURI) 
+              xq:invoked($doc/xqdoc:module/xqdoc:invoked, $module) 
             },
           "refVariables" : 
             array-node { 
-              xq:ref-variables($doc/xqdoc:module/xqdoc:ref-variable, $moduleURI) 
+              xq:ref-variables($doc/xqdoc:module/xqdoc:ref-variable, $module) 
             },
           "variables" : 
             if ($doc/xqdoc:variables) 

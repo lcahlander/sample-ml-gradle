@@ -38,7 +38,7 @@ class XQDocComment extends PolymerElement {
           </template>
           <template is="dom-if" if="{{_showParameters(parameters)}}">
             <h2>Parameters</h2>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listParameters(comment.params, parameters)}}"  height-by-rows>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{parameters}}"  height-by-rows>
               <vaadin-grid-column>
                 <template class="header">Parameter</template>
                 <template>[[item.name]]</template>
@@ -53,13 +53,13 @@ class XQDocComment extends PolymerElement {
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Comment</template>
-                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+                <template><markdown-element markdown="[[item.description]]"></markdown-element></template>
               </vaadin-grid-column>
             </vaadin-grid>
           </template>
-          <template is="dom-if" if="{{_showReturn(comment.return, return)}}">
+          <template is="dom-if" if="{{return}}">
             <h2>Return</h2>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(comment.return, return)}}"  height-by-rows>
+            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(return)}}"  height-by-rows>
               <vaadin-grid-column>
                 <template class="header">Data Type</template>
                 <template>[[item.type]]</template>
@@ -70,7 +70,7 @@ class XQDocComment extends PolymerElement {
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Comment</template>
-                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+                <template><markdown-element markdown="[[item.description]]"></markdown-element></template>
               </vaadin-grid-column>
             </vaadin-grid>
           </template>
@@ -94,16 +94,6 @@ class XQDocComment extends PolymerElement {
 
   _showParameters(parameters) {
       if (parameters.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-  }
-
-  _showReturn(comments, returnDescription) {
-      if (comments) {
-        return true;
-      } else if (returnDescription) {
         return true;
       } else {
         return false;
@@ -160,54 +150,9 @@ class XQDocComment extends PolymerElement {
     return detail;
   }
 
-  _listParameters(comments, parameters) {
-    var params = [];
-
-    for (var index = 0; index < parameters.length; index++) {
-      var item = parameters[index];
-      var param = { name: item.name };
-
-      if (item.type) {
-        param.type = item.type;
-      }
-      if (item.occurrence) {
-        param.occurrence = item.occurrence;
-      }
-
-      var matchstr = '/\$' + item.name + '\s+';
-
-      if (comments.length) {
-        for (var idx2 = 0; idx2 < comments.length; idx2++) {
-          var paramc = comments[idx2];
-          var theMatch = paramc.match(matchstr);
-          if (theMatch) {
-            var positiona = theMatch.index;
-            var positionb = theMatch[0].length;
-            param.comment = paramc.substring(positiona + positionb);
-          }
-
-        }
-      }
-      params.push(param);
-    }
-    return params;
-  }
-
-  _listReturn(comments, returnDescription) {
+  _listReturn(returnDescription) {
     var returns = [];
-    var returnObject = { };
-
-      if (returnDescription.type) {
-        returnObject.type = returnDescription.type;
-      }
-      if (returnDescription.occurrence) {
-        returnObject.occurrence = returnDescription.occurrence;
-      }
-
-      if(comments) {
-        returnObject.comment = comments;
-      }
-      returns.push(returnObject);
+      returns.push(returnDescription);
     return returns;
   }
 }
