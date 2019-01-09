@@ -21,86 +21,84 @@ class XQDocComment extends PolymerElement {
         }
     </style>
     <template is="dom-if" if="{{_isUnhealthy(showHealth, comment.description)}}">
-      <div class="unhealthy">No xqDoc comment exists</div>
+      <div class="unhealthy">No xqDoc description exists</div>
     </template>
-    <template is="dom-if" if="[[comment]]">
-      <markdown-element markdown="[[comment.description]]"></markdown-element>
-      <iron-collapse id="detailCollapse" opened="{{showDetail}}">
-        <div class="conceptcard">
-          <template is="dom-if" if="{{_showCommentDetails(comment)}}">
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listDetail(comment)}}"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Type</template>
-                <template>[[item.name]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Comment</template>
-                <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-          <template is="dom-if" if="{{_showParameters(parameters)}}">
-            <h2>Parameters</h2>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{parameters}}"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Parameter</template>
-                <template>[[item.name]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Data Type</template>
-                <template>
-                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.type)}}">
-                    <div class="unhealthy">No data type specified for parameter.</div>
-                  </template>
-                  [[item.type]]
+    <markdown-element markdown="[[comment.description]]"></markdown-element>
+    <iron-collapse id="detailCollapse" opened="{{showDetail}}">
+      <div class="conceptcard">
+        <template is="dom-if" if="{{_showCommentDetails(comment)}}">
+          <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listDetail(comment)}}"  height-by-rows>
+            <vaadin-grid-column>
+              <template class="header">Type</template>
+              <template>[[item.name]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Comment</template>
+              <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </template>
+        <template is="dom-if" if="{{_showParameters(parameters)}}">
+          <h2>Parameters</h2>
+          <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{parameters}}"  height-by-rows>
+            <vaadin-grid-column>
+              <template class="header">Parameter</template>
+              <template>[[item.name]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Data Type</template>
+              <template>
+                <template is="dom-if" if="{{_isUnhealthy(showHealth, item.type)}}">
+                  <div class="unhealthy">No data type specified for parameter.</div>
                 </template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Occurrence</template>
-                <template>[[item.occurrence]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Comment</template>
-                <template>
-                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
-                    <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
-                  </template>
-                  <markdown-element markdown="[[item.description]]"></markdown-element>
+                [[item.type]]
+              </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Occurrence</template>
+              <template>[[item.occurrence]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Description</template>
+              <template>
+                <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
+                  <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
                 </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
-          </template>
-          <template is="dom-if" if="{{!return}}">
-            <template is="dom-if" if="{{showHealth}}">
-              <h2>Return</h2>
-              <div class="unhealthy">No return type specified for this function</div>
-            </template>
-          </template>
-          <template is="dom-if" if="{{return}}">
+                <markdown-element markdown="[[item.description]]"></markdown-element>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </template>
+        <template is="dom-if" if="{{!return}}">
+          <template is="dom-if" if="{{showHealth}}">
             <h2>Return</h2>
-            <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(return)}}"  height-by-rows>
-              <vaadin-grid-column>
-                <template class="header">Data Type</template>
-                <template>[[item.type]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Occurrence</template>
-                <template>[[item.occurrence]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">Comment</template>
-                <template>
-                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
-                    <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
-                  </template>
-                  <markdown-element markdown="[[item.description]]"></markdown-element>
-                </template>
-              </vaadin-grid-column>
-            </vaadin-grid>
+            <div class="unhealthy">No return type specified for this function</div>
           </template>
-        </div>
-      </iron-collapse>
-    </template>
+        </template>
+        <template is="dom-if" if="{{return}}">
+          <h2>Return</h2>
+          <vaadin-grid  theme="compact wrap-cell-content column-borders row-stripes" items="{{_listReturn(return)}}"  height-by-rows>
+            <vaadin-grid-column>
+              <template class="header">Data Type</template>
+              <template>[[item.type]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Occurrence</template>
+              <template>[[item.occurrence]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template class="header">Description</template>
+              <template>
+                <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
+                  <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
+                </template>
+                <markdown-element markdown="[[item.description]]"></markdown-element>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </template>
+      </div>
+    </iron-collapse>
     `;
   }
   static get properties() {
@@ -125,13 +123,17 @@ class XQDocComment extends PolymerElement {
   }
 
   _showCommentDetails(comment) {
-    if ((comment.authors.length + 
-         comment.versions.length + 
-         comment.errors.length + 
-         comment.deprecated.length + 
-         comment.see.length + 
-         comment.since.length) > 0) {
-      return true;
+    if (comment) {
+      if ((comment.authors.length + 
+           comment.versions.length + 
+           comment.errors.length + 
+           comment.deprecated.length + 
+           comment.see.length + 
+           comment.since.length) > 0) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }

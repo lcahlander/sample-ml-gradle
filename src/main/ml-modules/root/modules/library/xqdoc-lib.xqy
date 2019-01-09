@@ -118,7 +118,7 @@ declare function xq:functions($functions as node()*, $module-uri as xs:string?) 
                         for $parameter in $function/xqdoc:parameters/xqdoc:parameter
                         let $ptest := '$' || $parameter/xqdoc:name/text()
                         let $param := $function//xqdoc:param[fn:starts-with(., $ptest)]
-                        let $pbody := fn:substring($param/text(), fn:string-length($ptest) + 1)
+                        let $pbody := fn:substring(fn:string-join($param/text(), " "), fn:string-length($ptest) + 1)
                         let $description := replace($pbody,'^\s+','')
                         return 
                           object-node {
