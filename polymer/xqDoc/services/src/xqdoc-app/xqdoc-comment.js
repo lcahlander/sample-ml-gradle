@@ -33,7 +33,7 @@ class XQDocComment extends PolymerElement {
               <template>[[item.name]]</template>
             </vaadin-grid-column>
             <vaadin-grid-column>
-              <template class="header">Comment</template>
+              <template class="header">Description</template>
               <template><markdown-element markdown="[[item.comment]]"></markdown-element></template>
             </vaadin-grid-column>
           </vaadin-grid>
