@@ -14,11 +14,14 @@ class XQDocComment extends PolymerElement {
       :host {
         display: block;
         }
+        div.unhealthy {
+          background-color: red;
+          height: 100%;
+          width: 100%;
+        }
     </style>
-    <template is="dom-if" if="[[!comment]]">
-      <template is="dom-if" if="[[showHealth]]">
-        <h1>NO COMMENT<h1>
-      </template>
+    <template is="dom-if" if="{{_isUnhealthy(showHealth, comment.description)}}">
+      <div class="unhealthy">No xqDoc comment exists</div>
     </template>
     <template is="dom-if" if="[[comment]]">
       <markdown-element markdown="[[comment.description]]"></markdown-element>
@@ -42,10 +45,15 @@ class XQDocComment extends PolymerElement {
               <vaadin-grid-column>
                 <template class="header">Parameter</template>
                 <template>[[item.name]]</template>
-                </vaadin-grid-column>
+              </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Data Type</template>
-                <template>[[item.type]]</template>
+                <template>
+                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.type)}}">
+                    <div class="unhealthy">No data type specified for parameter.</div>
+                  </template>
+                  [[item.type]]
+                </template>
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Occurrence</template>
@@ -53,9 +61,20 @@ class XQDocComment extends PolymerElement {
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Comment</template>
-                <template><markdown-element markdown="[[item.description]]"></markdown-element></template>
+                <template>
+                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
+                    <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
+                  </template>
+                  <markdown-element markdown="[[item.description]]"></markdown-element>
+                </template>
               </vaadin-grid-column>
             </vaadin-grid>
+          </template>
+          <template is="dom-if" if="{{!return}}">
+            <template is="dom-if" if="{{showHealth}}">
+              <h2>Return</h2>
+              <div class="unhealthy">No return type specified for this function</div>
+            </template>
           </template>
           <template is="dom-if" if="{{return}}">
             <h2>Return</h2>
@@ -70,7 +89,12 @@ class XQDocComment extends PolymerElement {
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">Comment</template>
-                <template><markdown-element markdown="[[item.description]]"></markdown-element></template>
+                <template>
+                  <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
+                    <div class="unhealthy">No @param specified for this parameter in the xqDoc comment</div>
+                  </template>
+                  <markdown-element markdown="[[item.description]]"></markdown-element>
+                </template>
               </vaadin-grid-column>
             </vaadin-grid>
           </template>
@@ -107,6 +131,14 @@ class XQDocComment extends PolymerElement {
          comment.deprecated.length + 
          comment.see.length + 
          comment.since.length) > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  _isUnhealthy(showHealth, testItem) {
+    if (showHealth && (testItem == null || testItem.length == 0)) {
       return true;
     } else {
       return false;
