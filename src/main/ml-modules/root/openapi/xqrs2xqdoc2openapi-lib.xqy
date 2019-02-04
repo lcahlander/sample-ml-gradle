@@ -1,6 +1,17 @@
 xquery version "1.0-ml";
 
 (:~
+## RestXQ (XQRS) Module xqDoc to OpenAPI Display
+
+This library module takes the xqDoc files with RestXQ (%rest:xxx) annotations to the 
+OpenAPI 3 JSON format for the OpenAPI UI webpage.
+
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @return the OpenAPI JSON document for the OpenAPI display
+ @see https://github.com/OAI/OpenAPI-Specification
+ @see https://github.com/lcahlander/xqdoc
  :)
 module namespace xqrs2openapi="http://xqdoc.org/library/xqrs/xqdoc/openapi";
 
@@ -11,10 +22,12 @@ declare default element namespace "http://marklogic.com/xdmp/json/basic";
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
 (:~
+The RestXQ annotation names for the various HTTP method
  :)
 declare variable $xqrs2openapi:service-names := ("rest:GET", "rest:HEAD", "rest:PUT", "rest:POST", "rest:DELETE", "rest:OPTIONS", "rest:PATCH");
 
 (:~
+ @param $literal
  :)
 declare function xqrs2openapi:param-name($literal as node())
 as xs:string
@@ -32,6 +45,8 @@ as xs:string
 };
 
 (:~
+ @param $function The xqDoc element for a function
+ @param $param-name
  :)
 declare function xqrs2openapi:get-string-parameter-description($function as node(), $param-name as xs:string)
 as xs:string
@@ -45,6 +60,7 @@ as xs:string
 };
  
 (:~
+ @param $type
  :)
 declare function xqrs2openapi:schema-object($type as node())
 as map:map
@@ -70,8 +86,18 @@ as map:map
 };
 
 (:~
+ @param $name
+ @param $pname
+ @param $in
+ @param $description
+ @param $parameters
  :)
-declare function xqrs2openapi:parameter-object($name as xs:string, $pname as xs:string, $in as xs:string, $description as xs:string?, $parameters as node()?)
+declare function xqrs2openapi:parameter-object(
+                    $name as xs:string, 
+                    $pname as xs:string, 
+                    $in as xs:string, 
+                    $description as xs:string?, 
+                    $parameters as node()?)
 as map:map
 {
     let $obj := map:map()
@@ -86,6 +112,9 @@ as map:map
 };
 
 (:~
+ @param $function The xqDoc element for a function
+ @param $path The %rest:path annotation string to extract the path parameters
+ @return the OpenAPI JSON for a service object for `get`, `put`, `post`, `delete`
  :)
 declare function xqrs2openapi:service-object($function as node()?, $path as xs:string) 
 as map:map?
@@ -187,6 +216,8 @@ as map:map?
 };
 
 (:~
+
+ @return the OpenAPI JSON document for the OpenAPI display
  :)
 declare function xqrs2openapi:process-xqrs-to-xqDoc-to-OpenAPI()
 as map:map

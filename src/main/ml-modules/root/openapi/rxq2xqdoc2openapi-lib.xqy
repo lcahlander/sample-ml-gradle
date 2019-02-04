@@ -1,6 +1,17 @@
 xquery version "1.0-ml";
 
 (:~
+## RestXQ (RXQ) Module xqDoc to OpenAPI Display
+
+This library module takes the xqDoc files with RXQ (%rxq:xxx) annotations to the 
+OpenAPI 3 JSON format for the OpenAPI UI webpage.
+
+ @author Loren Cahlander
+ @version 1.0
+ @since 1.0
+ @return the OpenAPI JSON document for the OpenAPI display
+ @see https://github.com/OAI/OpenAPI-Specification
+ @see https://github.com/lcahlander/xqdoc
  :)
 module namespace rxq2openapi="http://xqdoc.org/library/rxq/xqdoc/openapi";
 
@@ -70,6 +81,9 @@ as map:map
 };
 
 (:~
+ @param $function The xqDoc element for a function
+ @param $path The %rest:path annotation string to extract the path parameters
+ @return the OpenAPI JSON for a service object for `get`, `put`, `post`, `delete`
  :)
 declare function rxq2openapi:service-object($function as node()?, $path as xs:string) 
 as map:map?
@@ -127,6 +141,8 @@ as map:map?
 };
 
 (:~
+
+ @return the OpenAPI JSON document for the OpenAPI display
  :)
 declare function rxq2openapi:process-rxq-to-xqDoc-to-OpenAPI()
 as map:map

@@ -1,7 +1,11 @@
 xquery version "1.0-ml";
 
 (:~
- This module generates the OpenAPI JSON document for the OpenAPI display.
+## MarkLogic Services Module xqDoc to OpenAPI Display
+
+This library module takes the xqDoc files from the /services directory to the 
+OpenAPI 3 JSON format for the OpenAPI UI webpage.
+
  @author Loren Cahlander
  @version 1.0
  @since 1.0
