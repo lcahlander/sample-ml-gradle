@@ -1,5 +1,14 @@
 xquery version "1.0-ml";
 
+(:
+ : Module Name: RestXQ (XQRS) Module xqDoc to OpenAPI Display Library Module
+ : Module Version: 1.0
+ : Date: January 6, 2006
+ : Copyright: EasyMetaHub, LLC.
+ : Proprietary XQuery Extensions Used: None
+ : XQuery Specification: November 2005
+ :)
+
 (:~
 ## RestXQ (XQRS) Module xqDoc to OpenAPI Display
 
@@ -27,7 +36,11 @@ The RestXQ annotation names for the various HTTP method
 declare variable $xqrs2openapi:service-names := ("rest:GET", "rest:HEAD", "rest:PUT", "rest:POST", "rest:DELETE", "rest:OPTIONS", "rest:PATCH");
 
 (:~
+Strip the curly braces and the dollar sign from the RestXQ annotation literal.
+
+e.g.  {$id} become id
  @param $literal
+ @return The name of the parameter
  :)
 declare function xqrs2openapi:param-name($literal as node())
 as xs:string
@@ -71,7 +84,7 @@ as map:map
         then
             let $_ := map:put($schema-object, "type", "array")
             let $items-object := map:map()
-            let $_ := map:put($items-object, "type", "file")
+            let $_ := (map:put($items-object, "type", "string"), map:put($items-object, "format", "binary"))
             return map:put($schema-object, "items", $items-object)
         else
             let $_ := map:put($schema-object, "type", $type/text())
@@ -148,27 +161,57 @@ as map:map?
 
     let $request-body := map:map()
     let $request-content-object := map:map()
-    let $_ := if ($function//xqdoc:annotation[fn:starts-with(@name, "rest:consumes")]) then (
-        for $consumer in $function//xqdoc:annotation[fn:starts-with(@name, "rest:consumes")]
-        return 
-            for $literal in $consumer/xqdoc:literal
-            let $consumes-opject := map:map()
-            let $schema-object := map:map()
-            let $schema-put := map:put($schema-object, "type", "object")
-            let $consumes-put := map:put($consumes-opject, "schema", $schema-object)
-            return map:put($request-content-object, xs:string($literal), $consumes-opject),
-        map:put($request-body, "content", $request-content-object)
-    ) else ()
+    let $schema-object := map:map()
+    let $items-properties := map:map()
+    let $properties-object := map:map()
+    let $form-data-properties := map:map()
+    let $_ := (
+        map:put($items-properties, "type", "string"),
+        map:put($items-properties, "format", "binary")
+        )
+    let $_ :=
+        if ($function//xqdoc:annotation[fn:starts-with(@name, "rest:form-param")])
+        then 
+            (
+                for $param in $function//xqdoc:annotation[fn:starts-with(@name, "rest:form-param")]
+                let $form-param-property := map:map()
+                let $name := $param/xqdoc:literal[1]/text()
+                let $pname := xqrs2openapi:param-name($param/xqdoc:literal[2])
+                let $description := map:put($form-param-property, "description", xqrs2openapi:get-parameter-description($function, $param/xqdoc:literal[2]))
+                let $type-obj := $function//xqdoc:parameter[xqdoc:name = $pname]/xqdoc:type
+                let $_type := switch ($type-obj/text())
+                    case "map:map" return
+                        (
+                            map:put($form-param-property, "type", "array"),
+                            map:put($form-param-property, "items", $items-properties)
+                        )
+                    default return
+                        map:put($form-param-property, "type", "string")
+                return map:put($properties-object, $name, $form-param-property),
+                map:put($schema-object, "properties", $properties-object),
+                map:put($schema-object, "type", "object"),
+                map:put($form-data-properties, "schema", $schema-object),
+                map:put($request-content-object, "multipart/form-data", $form-data-properties),
+                map:put($request-body, "content", $request-content-object)
+            )
+        else 
+            if ($function//xqdoc:annotation[fn:starts-with(@name, "rest:consumes")]) 
+            then 
+                (
+                for $consumer in $function//xqdoc:annotation[fn:starts-with(@name, "rest:consumes")]
+                return 
+                    for $literal in $consumer/xqdoc:literal
+                    let $consumes-opject := map:map()
+                    let $schema-object := map:map()
+                    let $schema-put := map:put($schema-object, "type", "object")
+                    let $consumes-put := map:put($consumes-opject, "schema", $schema-object)
+                    return map:put($request-content-object, xs:string($literal), $consumes-opject),
+                map:put($request-body, "content", $request-content-object)
+                ) 
+            else ()
 
     let $parameters-array := json:array()
     let $_ := (
-                for $param in $function//xqdoc:annotation[fn:starts-with(@name, "rest:form-param")]
-                let $name := $param/xqdoc:literal[1]/text()
-                let $pname := xqrs2openapi:param-name($param/xqdoc:literal[2])
-                let $description := xqrs2openapi:get-parameter-description($function, $param/xqdoc:literal[2])
-                let $obj := xqrs2openapi:parameter-object($name, $pname, "formData", $description, $function//xqdoc:parameters)
-                let $_push := json:array-push($parameters-array, $obj)
-                return (),
                 for $param in $function//xqdoc:annotation[fn:starts-with(@name, "rest:query-param")]
                 let $name := $param/xqdoc:literal[1]/text()
                 let $pname := xqrs2openapi:param-name($param/xqdoc:literal[2])
@@ -206,7 +249,7 @@ as map:map?
             if (json:array-size($parameters-array) gt 0) 
             then map:put($service-object, "parameters", $parameters-array) 
             else (),
-            if ($function//xqdoc:annotation[@name = ("rest:PUT", "rest:POST")]) 
+            if ($function//xqdoc:annotation[@name = ("rest:PUT", "rest:POST")] or $function//xqdoc:annotation[fn:starts-with(@name, "rest:form-param")]) 
             then map:put($service-object, "requestBody", $request-body) 
             else ()
     )

@@ -90,7 +90,7 @@ class XQDocComment extends PolymerElement {
               <template class="header">Description</template>
               <template>
                 <template is="dom-if" if="{{_isUnhealthy(showHealth, item.description)}}">
-                  <div class="unhealthy">No @return specified for this parameter in the xqDoc comment</div>
+                  <div class="unhealthy">No @return specified in the xqDoc comment</div>
                 </template>
                 <markdown-element markdown="[[item.description]]"></markdown-element>
               </template>
