@@ -2,6 +2,7 @@ import {PolymerElement, html} from '@polymer/polymer/polymer-element.js';
 import '@vaadin/vaadin-grid/vaadin-grid.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@intcreator/markdown-element';
+import 'prismjs/prism.js';
 
 /**
  * @customElement
@@ -129,7 +130,8 @@ class XQDocComment extends PolymerElement {
            comment.errors.length + 
            comment.deprecated.length + 
            comment.see.length + 
-           comment.since.length) > 0) {
+           comment.since.length +
+           comment.custom.length) > 0) {
         return true;
       } else {
         return false;
@@ -179,6 +181,11 @@ class XQDocComment extends PolymerElement {
     if (comment.since.length) {
       for (idx2 = 0; idx2 < comment.since.length; idx2++) {
         detail.push({ name: "Since", comment: comment.since[idx2] });
+      }
+    }
+    if (comment.custom.length) {
+      for (idx2 = 0; idx2 < comment.custom.length; idx2++) {
+        detail.push({ name: comment.custom[idx2].tag, comment: comment.custom[idx2].description });
       }
     }
     return detail;

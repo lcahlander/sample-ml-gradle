@@ -1,7 +1,9 @@
 import org.apache.tools.ant.filters.BaseFilterReader
+import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
     }
 
@@ -58,4 +60,44 @@ task generateXQDocs(type: Copy) {
   output_collections = "xqdoc"
   output_uri_replace = ".*xqDoc,'/xqDoc'"
   document_type = "mixed"
+}
+
+/**
+ * Polymer 
+ */
+
+task npmInstallXQDocXQRS(type: Exec) {
+    String npm = 'npm';
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        npm = 'npm.cmd'
+    }
+    workingDir 'src/main/polymer/xqDoc/xqrs'
+    commandLine npm, 'install'
+}
+
+task polymerBuildXQDocXQRS(type: Exec) {
+    String polymer = 'polymer';
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        polymer = 'polymer.cmd'
+    }
+    workingDir 'src/main/polymer/xqDoc/xqrs'
+    commandLine polymer, 'build'
+}
+
+task npmInstallXQDocMLServices(type: Exec) {
+    String npm = 'npm';
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        npm = 'npm.cmd'
+    }
+    workingDir 'src/main/polymer/xqDoc/services'
+    commandLine npm, 'install'
+}
+
+task polymerBuildXQDocMLServices(type: Exec) {
+    String polymer = 'polymer';
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        polymer = 'polymer.cmd'
+    }
+    workingDir 'src/main/polymer/xqDoc/services'
+    commandLine polymer, 'build'
 }
