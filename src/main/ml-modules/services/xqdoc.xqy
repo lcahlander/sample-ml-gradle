@@ -43,6 +43,14 @@ declare function xq:comment($comment as node()?) {
       "deprecated": array-node { $comment/xqdoc:deprecated/text() },
       "see": array-node { $comment/xqdoc:see/text() },
       "since": array-node { $comment/xqdoc:since/text() },
+      "custom" : array-node {
+          for $custom in $comment/xqdoc:custom
+          return
+            object-node {
+              "tag" : $custom/@tag/string(),
+              "description" : fn:string-join($custom/text())
+            }
+        },
       "openapi" : 
         if ($comment/xqdoc:custom[@tag = "openapi"]) 
         then xdmp:from-json-string("{" || fn:string-join($comment/xqdoc:custom[@tag = "openapi"]/text()) || "}") 
